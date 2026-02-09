@@ -1,0 +1,14 @@
+# Docker データベース
+/docker/mysql/data/
+
+
+# Laravel 環境設定ファイル
+.env
+.env.local
+.env.*.backup
+
+# SSH 鍵・秘密鍵
+*.pem
+*.key
+id_rsa
+id_rsa.pub
