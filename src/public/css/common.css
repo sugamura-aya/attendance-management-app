@@ -1,0 +1,59 @@
+/* ========== Header基盤 ========== */
+.header {
+    width: 100%;/* PC (1400-1540px)」で崩さないため、黒い背景色は画面の端から端まで伸びるよう設定 */
+    background: black;
+}
+
+.header__inner {
+    height: 80px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1400px;/* PC (1400-1540px)」で崩さないため */
+}
+
+/* ========== ロゴマーク ========== */
+.header__logo {
+    height: 36px;
+    width: auto;
+}
+
+/* ========== Nav部分 ========== */
+.header__right {
+    display: flex;
+    align-items: center;
+}
+
+.header__nav {
+    display: flex;
+    align-items: center;
+    gap: 20px;/* ボタン同士の間隔をここでコントロール */
+}
+
+/* リンクとログアウトボタンの共通スタイル */
+.nav__item {
+    background: none;
+    border: none;
+    text-decoration: none;
+    cursor: pointer;
+    color: #FFFFFF;
+    font-size: 18px;
+    font-weight: 400;
+    transition: opacity 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.nav__item:hover {
+    opacity: 0.7;
+}
+
+/* ログアウト用フォームの余計な余白を消す */
+.logout-form {
+    margin: 0;
+    display: flex;
+    align-items: center;
+}
