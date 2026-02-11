@@ -21,6 +21,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role',
     ];
 
     /**
@@ -41,4 +42,23 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+
+    /*～～～～～リレーション～～～～～～*/
+
+    // ➀Userモデル：Attendanceモデル ＝ 親：子 ＝ 1：多
+    // リレーションを繋げる（親モデル側）
+    public function attendances()
+    {
+        // 「$this(Userモデル)はAttendanceモデルを複数有する」
+        return $this->hasMany(Attendance::class);
+    }
+
+    // ➁Userモデル：AttendanceRequestモデル ＝ 親：子 ＝ 1：多
+    // リレーションを繋げる（親モデル側）
+    public function attendanceRequests()
+    {
+        // 「$this(Userモデル)はAttendanceRequestモデルを複数有する」
+        return $this->hasMany(AttendanceRequest::class);
+    }
 }
