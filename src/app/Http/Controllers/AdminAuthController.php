@@ -34,7 +34,7 @@ class AdminAuthController extends Controller
 
 
     // ログアウト処理（POST）
-    public function logout(Request $request)
+    public function logout()
     {
         Auth::logout();
 
