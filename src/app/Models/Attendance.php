@@ -35,4 +35,37 @@ class Attendance extends Model
         // 「$this(Attendanceモデル)はBreakTimeモデルを複数有する」
         return $this->hasMany(BreakTime::class);
     }
+
+
+
+    /*～計算ロジック～*/
+    // --- 休憩の合計時間を秒で計算する関数 ---
+    public function getTotalBreakSeconds()
+    {
+        $totalSeconds = 0;
+        foreach ($this->breakTimes as $break) {
+            if ($break->start_time && $break->end_time) {
+                $totalSeconds += \Carbon\Carbon::parse($break->end_time)->diffInSeconds(\Carbon\Carbon::parse($break->start_time));
+            }
+        }
+        return $totalSeconds;
+    }
+
+    // --- 「H:i」形式の休憩時間を返す ---
+    public function getFormattedTotalBreakTime()
+    {
+        $seconds = $this->getTotalBreakSeconds();
+        return sprintf('%02d:%02d', floor($seconds / 3600), ($seconds / 60) % 60);
+    }
+
+    // --- 「H:i」形式の勤務合計時間を返す ---
+    public function getFormattedTotalWorkingTime()
+    {
+        if (!$this->clock_in || !$this->clock_out) return '-:-';
+
+        $totalStaySeconds = \Carbon\Carbon::parse($this->clock_out)->diffInSeconds(\Carbon\Carbon::parse($this->clock_in));
+        $workingSeconds = $totalStaySeconds - $this->getTotalBreakSeconds();
+
+        return sprintf('%02d:%02d', floor($workingSeconds / 3600), ($workingSeconds / 60) % 60);
+    }
 }

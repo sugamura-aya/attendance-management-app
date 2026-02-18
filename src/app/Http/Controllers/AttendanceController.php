@@ -167,32 +167,6 @@ class AttendanceController extends Controller
             ->with('breakTimes') 
             ->get();
 
-        // 3. 【計算と加工】
-        foreach ($attendances as $attendance) {
-            
-            // --- 休憩の合計時間を計算 ---
-            $totalBreakSeconds = 0; //休憩時間合計の空の箱を用意（中身ゼロ）
-            foreach ($attendance->breakTimes as $break) { 
-                if ($break->start_time && $break->end_time) {
-                    // 終了 - 開始 で秒数を出す
-                    $totalBreakSeconds += Carbon::parse($break->end_time)->diffInSeconds(Carbon::parse($break->start_time)); //diffInSeconds：「開始」と「終了」の「差（diff）」を「秒（Seconds）」で返す命令。
-                }
-            }
-            // 秒を「H:i」形式に変換して、一時的にデータに持たせる
-            $attendance->total_break = floor($totalBreakSeconds / 3600) . ':' . sprintf('%02d', ($totalBreakSeconds / 60) % 60);
-
-            // --- 労働合計時間の計算 ---
-            if ($attendance->clock_in && $attendance->clock_out) {
-                $totalStaySeconds = Carbon::parse($attendance->clock_out)->diffInSeconds(Carbon::parse($attendance->clock_in));
-                $workingSeconds = $totalStaySeconds - $totalBreakSeconds; // 滞在時間 - 休憩時間
-                
-                // 「H:i」形式に変換
-                $attendance->total_working = floor($workingSeconds / 3600) . ':' . sprintf('%02d', ($workingSeconds / 60) % 60);
-            } else {
-                $attendance->total_working = '-:-';
-            }
-        }
-
         return view('attendance.list', compact('attendances', 'targetMonth'));
     }
 
@@ -209,21 +183,27 @@ class AttendanceController extends Controller
     // 申請登録処理（POST）
     public function storeRequest(AttendanceUpdateRequest $request, $id)
     {
-        // 1.申請書を用意する（白紙を用意）
+        // 1. 【勤怠申請】を保存（親）
         $attendanceRequest = new AttendanceRequest(); 
+        $attendanceRequest->user_id = Auth::id();
+        $attendanceRequest->attendance_id = $id; // どの勤怠に対する申請か
+        $attendanceRequest->date = $request->date;
+        $attendanceRequest->clock_in = $request->clock_in;
+        $attendanceRequest->clock_out = $request->clock_out;
+        $attendanceRequest->remarks = $request->remarks; // 備考
+        $attendanceRequest->status = 0; // 承認待ち
+        $attendanceRequest->save();
 
-        // 2. 項目に必要事項をすべて記入する（マイグレーションの項目名（左側）に、画面からのデータ（右側）を入れる）
-        $attendanceRequest->user_id = Auth::id();              
-        $attendanceRequest->date    = $request->date;         
-        $attendanceRequest->clock_in  = $request->clock_in;    
-        $attendanceRequest->clock_out = $request->clock_out;   
-        $attendanceRequest->remarks   = $request->reason; // 備考
-        $attendanceRequest->status    = 0; // 0:承認待ち（1:承認済み）
+        // 2. 【休憩申請】を保存（子）
+        // 画面から送られてきた複数の休憩データを保存する
+        foreach ($request->breaks as $breakData) {
+            $breakRequest = new BreakTimeRequest();
+            $breakRequest->attendance_request_id = $attendanceRequest->id; // 親のIDを紐付け
+            $breakRequest->start_time = $breakData['start_time'];
+            $breakRequest->end_time = $breakData['end_time'];
+            $breakRequest->save();
+        }
 
-        // 3. 書いた申請書をまとめて登録
-        $attendanceRequest->save(); // 保存実行
-
-        // 申請保存処理
         return redirect()->route('attendance.list')->with('success', '修正申請を提出しました');
     }
 }
