@@ -10,7 +10,6 @@ use App\Models\Attendance;
 use App\Models\AttendanceRequest; 
 use App\Models\BreakTime; 
 use App\Models\BreakTimeRequest; 
-
 use App\Http\Requests\AttendanceUpdateRequest;
 
 class AdminAttendanceController extends Controller
@@ -35,5 +34,140 @@ class AdminAttendanceController extends Controller
             'prevDate' => $date->copy()->subDay()->format('Y-m-d'),
             'nextDate' => $date->copy()->addDay()->format('Y-m-d'),
         ]);
+    }
+
+
+    // ⓽ 勤怠詳細画面（管理者向け：表示）
+    public function showDetail($id)
+    {
+        // 指定されたIDの勤怠データを、ユーザー情報と休憩情報と一緒に取得
+        $attendance = Attendance::with(['user', 'breakTimes'])->findOrFail($id);
+
+        return view('admin.attendance_detail', compact('attendance'));
+    }
+
+    // ⓽ 勤怠詳細画面（管理者向け：更新）
+    public function update(AttendanceUpdateRequest $request, $id)
+    {
+        // 1. 対象の勤怠データを取得
+        $attendance = Attendance::findOrFail($id);
+
+        // 2. 勤怠本番テーブル（attendances）を更新
+        $attendance->update([
+            'clock_in'  => $request->clock_in,
+            'clock_out' => $request->clock_out,
+            'remarks'   => $request->remarks,
+        ]);
+
+        // 3. 休憩本番テーブル（break_times）の更新
+        // 申請ではなく管理者の直接修正なので、一度今の休憩を消して新しく作り直すのが一番確実で正確！
+        $attendance->breakTimes()->delete();//AttendanceModelのリレーション（public function breakTimes()）関数を呼び出し、その取り出したデータを削除。
+
+        if ($request->has('breaks')) { //'breaks'=HTMLの入力フォームのname属性（この場合休憩時間を指す）→画面から休憩のデータが一つでも送られてきてるかを確認。
+            foreach ($request->breaks as $breakData) {
+                // start_time と end_time の両方が入っている場合のみ保存
+                if (!empty($breakData['start_time']) && !empty($breakData['end_time'])) {
+                    $attendance->breakTimes()->create([
+                        'start_time' => $breakData['start_time'],
+                        'end_time'   => $breakData['end_time'],
+                    ]);
+                }
+            }
+        }
+
+        return redirect()->route('admin.attendance.list')->with('success', '勤怠情報を修正しました');
+    }
+
+
+    // ⓾ スタッフ一覧画面（管理者向け：表示）
+    public function showStaffList()
+    {
+        // userモデルから、一般ユーザー（role=0）だけを全員分取ってくる
+        $staffs = User::where('role', 0)->get();
+
+        return view('admin.staff_list', compact('staffs'));
+    }
+
+
+    // ⑪ スタッフ別勤怠一覧（管理者向け：表示）
+    public function showStaffAttendance(Request $request, $id)
+    {
+        // 1. 【モデル】から、そのスタッフ本人の情報を1件取得
+        $user = User::findOrFail($id);
+
+        // 2. 【リクエスト】から表示したい月を取得（なければ今月）
+        $targetMonth = $request->input('month', Carbon::now()->format('Y-m'));
+        $startDate = Carbon::parse($targetMonth)->startOfMonth(); // 月初
+        $endDate = Carbon::parse($targetMonth)->endOfMonth();     // 月末
+
+        // 3. 【モデル】そのスタッフに紐づく、指定された月の勤怠データを取得
+        $attendances = $user->attendances()
+            ->whereBetween('date', [$startDate, $endDate])
+            ->orderBy('date', 'asc')
+            ->with('breakTimes') // 休憩時間も一緒に持ってくる
+            ->get();
+
+        return view('admin.staff_attendance_list', compact('user', 'attendances', 'targetMonth'));
+    }
+
+
+    // ⑫ 申請一覧画面（管理者向け：表示）
+    public function index()
+    {
+        // 1. 全スタッフの「承認待ち(status=0)」の申請を、新しい順に取得
+        $pendingRequests = AttendanceRequest::with('user')
+            ->where('status', 0)
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        // 2. 全スタッフの「承認済み(status=1)」の申請を、新しい順に取得
+        $approvedRequests = AttendanceRequest::with('user')
+            ->where('status', 1)
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return view('admin.request_list', compact('pendingRequests', 'approvedRequests'));
+    }
+
+    // ⑬ 修正申請承認画面（管理者向け：表示）
+    public function showApproveForm($attendance_correct_request_id)
+    {
+        // 申請データを、紐づく休憩申請と一緒に取得
+        $attendanceRequest = AttendanceRequest::with(['user', 'breakTimeRequests'])
+            ->findOrFail($attendance_correct_request_id);
+
+        return view('admin.approve_form', compact('attendanceRequest'));
+    }
+
+    // ⑬ 修正申請承認処理（管理者向け：更新）
+    public function approve(Request $request, $attendance_correct_request_id)
+    {
+        // 1. 申請データを取得
+        $attendanceRequest = AttendanceRequest::findOrFail($attendance_correct_request_id);
+
+        // 2. 本番の勤怠データを取得
+        $attendance = Attendance::findOrFail($attendanceRequest->attendance_id);
+
+        // 3. 申請内容を本番テーブルへ上書きコピー！
+        $attendance->update([
+            'clock_in'  => $attendanceRequest->clock_in,
+            'clock_out' => $attendanceRequest->clock_out,
+            'remarks'   => $attendanceRequest->remarks,
+        ]);
+
+        // 4. 本番の休憩データを一度消して、申請されていた休憩内容を新しく作る
+        $attendance->breakTimes()->delete();
+
+        foreach ($attendanceRequest->breakTimeRequests as $breakReq) {
+            $attendance->breakTimes()->create([
+                'start_time' => $breakReq->start_time,
+                'end_time'   => $breakReq->end_time,
+            ]);
+        }
+
+        // 5. 申請のステータスを「承認済み(1)」にする
+        $attendanceRequest->update(['status' => 1]);
+
+        return redirect()->route('stamp_correction_request.list')->with('success', '申請を承認しました');
     }
 }
