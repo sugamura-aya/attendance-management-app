@@ -24,31 +24,31 @@
 
             {{-- 右：ナビゲーション（ログイン時のみ表示） --}}
             <div class="header__right">
-                @if(Auth::guard('admin')->check())
-                    {{-- 【管理者用メニュー】ログイン済み & role=1 --}}
-                    <nav class="header__nav">
-                        <a class="nav__item" href="{{ route('admin.attendance.list') }}">勤怠一覧</a>
-                        <a class="nav__item" href="{{ route('admin.staff.list') }}">スタッフ一覧</a>
-                        <a class="nav__item" href="{{ route('stamp_correction_request.list') }}">申請一覧</a>
-                        <form action="{{ route('admin.logout') }}" method="POST" class="logout-form">
-                            @csrf
-                            <button type="submit" class="nav__item">ログアウト</button>
-                        </form>
-                    </nav>
-                @elseif(Auth::check())
-                    {{-- 【一般ユーザー用メニュー】ログイン済み & role=0 --}}
-                    {{-- Laravelの設定（config/auth.php）で一般ユーザーはLaravelが自動で判別してくれるため、こちらには'guard'は不要 --}}
-                    <nav class="header__nav">
-                        <a class="nav__item" href="{{ route('attendance.index') }}">勤怠</a>
-                        <a class="nav__item" href="{{ route('attendance.list') }}">勤怠一覧</a>
-                        <a class="nav__item" href="{{ route('stamp_correction_request.list') }}">申請</a>
-                        <form action="/logout" method="POST" class="logout-form">
-                            @csrf
-                            <button type="submit" class="nav__item">ログアウト</button>
-                        </form>
-                    </nav>
+                @if(Auth::check())
+                    @if(Auth::user()->role === 1)
+                        {{-- 【管理者用メニュー】ログイン中 ＆ role=1 --}}
+                        <nav class="header__nav">
+                            <a class="nav__item" href="{{ route('admin.attendance.list') }}">勤怠一覧</a>
+                            <a class="nav__item" href="{{ route('admin.staff.list') }}">スタッフ一覧</a>
+                            <a class="nav__item" href="{{ route('stamp_correction_request.list') }}">申請一覧</a>
+                            <form action="{{ route('admin.logout') }}" method="POST" class="logout-form">
+                                @csrf
+                                <button type="submit" class="nav__item">ログアウト</button>
+                            </form>
+                        </nav>
+                    @else
+                        {{-- 【一般ユーザー用メニュー】ログイン中 ＆ role=0 --}}
+                        <nav class="header__nav">
+                            <a class="nav__item" href="{{ route('attendance.index') }}">勤怠</a>
+                            <a class="nav__item" href="{{ route('attendance.list') }}">勤怠一覧</a>
+                            <a class="nav__item" href="{{ route('stamp_correction_request.list') }}">申請</a>
+                            <form action="/logout" method="POST" class="logout-form">
+                                @csrf
+                                <button type="submit" class="nav__item">ログアウト</button>
+                            </form>
+                        </nav>
+                    @endif
                 @endif
-                {{-- 未ログイン時は何も表示しない（またはログインボタンなど） --}}
             </div>
         </div>
     </header>

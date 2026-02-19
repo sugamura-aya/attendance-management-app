@@ -22,6 +22,6 @@ class AdminMiddleware
         }
 
         // 条件に合わなければ、管理者ログイン画面へ
-        return redirect('/admin/login')->with('error', '管理者権限がありません');
+        return redirect()->route('admin.login')->with('error', '管理者権限がありません');
     }
 }

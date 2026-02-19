@@ -11,7 +11,7 @@ class AdminAuthController extends Controller
     // ➆ 管理者ログイン画面（表示）
     public function showLoginForm()
     {
-        return view('admin.login');
+        return view('auth.admin_login');
     }
 
 
