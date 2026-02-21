@@ -28,7 +28,7 @@ class AttendanceController extends Controller
             ->first();
 
         // 3. 【ステータスの判定ロジック】
-        // 最初は「勤務外」にしておいて、状況に応じて上書きしていくよ
+        // 最初は「勤務外」→状況に応じて上書き
         $status = '勤務外';
 
         if (!$attendance) {
