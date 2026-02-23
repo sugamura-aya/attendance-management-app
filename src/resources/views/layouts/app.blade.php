@@ -10,8 +10,14 @@
     <link rel="stylesheet" href="{{ asset('css/sanitize.css') }}" />
     {{--common.css（layout用CSS）呼び出し--}}
     <link rel="stylesheet" href="{{ asset('css/common.css') }}" />
+
     {{-- ページごとのCSS --}}
     @yield('css')
+
+    {{-- Webフォント --}}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
 </head>
 
 <body>
@@ -39,9 +45,18 @@
                     @else
                         {{-- 【一般ユーザー用メニュー】ログイン中 ＆ role=0 --}}
                         <nav class="header__nav">
-                            <a class="nav__item" href="{{ route('attendance.index') }}">勤怠</a>
-                            <a class="nav__item" href="{{ route('attendance.list') }}">勤怠一覧</a>
-                            <a class="nav__item" href="{{ route('stamp_correction_request.list') }}">申請</a>
+                            @if($status !== '退勤済')
+                                {{-- 【退勤打刻前】の表示 --}}
+                                <a class="nav__item" href="{{ route('attendance.index') }}">勤怠</a>
+                                <a class="nav__item" href="{{ route('attendance.list') }}">勤怠一覧</a>
+                                <a class="nav__item" href="{{ route('stamp_correction_request.list') }}">申請</a>
+                            @else
+                                {{-- 【退勤後】の表示 --}}
+                                <a class="nav__item" href="{{ route('attendance.list') }}">今月の出勤一覧</a>
+                                <a class="nav__item" href="{{ route('stamp_correction_request.list') }}">申請一覧</a>
+                            @endif
+
+                            {{-- ログアウトは共通 --}}
                             <form action="/logout" method="POST" class="logout-form">
                                 @csrf
                                 <button type="submit" class="nav__item">ログアウト</button>

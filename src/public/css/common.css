@@ -1,3 +1,9 @@
+/* 全体のフォントをInterに指定 */
+body {
+    font-family: 'Inter', "Noto Sans JP", sans-serif;
+    background-color: #F0EFF2;
+}
+
 /* ========== Header基盤 ========== */
 .header {
     width: 100%;/* PC (1400-1540px)」で崩さないため、黒い背景色は画面の端から端まで伸びるよう設定 */
@@ -39,8 +45,9 @@
     text-decoration: none;
     cursor: pointer;
     color: #FFFFFF;
-    font-size: 18px;
+    font-size: 24px;
     font-weight: 400;
+    gap: 40px;/* ボタン同士の隙間 */
     transition: opacity 0.3s;
     display: flex;
     align-items: center;

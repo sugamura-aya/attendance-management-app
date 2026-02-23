@@ -1,8 +1,8 @@
 @extends('layouts.app')
 
 @section('css')
-  {{-- 前回のレスポンシブ対応と同じく、外部CSSを読み込むよ --}}
-  <link rel="stylesheet" href="{{ asset('css/attendance.css') }}">
+  {{-- 外部CSSを読み込む --}}
+  <link rel="stylesheet" href="{{ asset('css/attendance/index.css') }}">
 @endsection
 
 @section('content')
@@ -79,3 +79,26 @@
     setInterval(updateTime, 1000);
 </script>
 @endsection
+
+
+{{-- layoutにある @stack('scripts') にこの中身を届ける --}}
+@push('scripts')
+<script>
+    function updateTime() {
+
+        const now = new Date();
+        const hours = String(now.getHours()).padStart(2, '0');
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+        
+        const displayTime = hours + ':' + minutes;
+        const timeElement = document.getElementById('realtime'); 
+        
+        if (timeElement) {
+            timeElement.textContent = displayTime;
+        }
+    }
+
+    setInterval(updateTime, 1000);
+    updateTime();
+</script>
+@endpush 

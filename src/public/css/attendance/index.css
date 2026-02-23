@@ -1,0 +1,113 @@
+/*【画面ID:03勤怠登録画面（打刻画面）】*/
+
+/* 全体のレイアウト */
+.attendance-container {
+    text-align: center;
+    padding: 60px 20px;
+    max-width: 600px;
+    margin: 200px auto;
+}
+
+
+/* 勤務状態（勤務外・出勤中など） */
+.status-display {
+    margin: 0 auto 20px;/* 上0、左右オート（これで中央！）、下20px */
+    width: 100px;
+    height: 40px;
+
+    /* 中の文字を上下左右ピッタリ真ん中にするための追加設定 */
+    display: flex;
+    justify-content: center;/* 左右中央 */
+    align-items: center;/* 上下中央 */
+
+    background-color: #C8C8C8;
+    border-radius: 50px;
+}
+
+.status-text {
+    font-size: 18px;
+    color: #696969;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+}
+
+
+/* 日時表示 */
+.datetime-display {
+    margin-bottom: 50px;
+}
+
+.date-text {
+    margin: 0 auto 20px;/* 上0、左右オート（これで中央！）、下20px */
+    width: 332px;
+    height: 48px;
+    font-size: 40px;
+    font-weight: 400;
+    color: #000000;
+    margin-bottom: 10px;
+}
+
+.time-text {
+    margin: 0 auto 20px;/* 上0、左右オート（これで中央！）、下20px */
+    height:97px;
+    font-size: 80px;
+    font-weight: 700;
+    color: #000000;
+    margin-bottom: 10px;
+    margin-top: 30px;
+
+    letter-spacing: 2px;
+}
+
+
+/* ボタンの共通スタイル */
+.attendance-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 82px;/* ボタン同士の隙間 */
+    flex-wrap: wrap;
+    margin-top: 87px;
+}
+
+.btn {
+    width: 221px;
+    height: 77px;
+    /* 正方形の大きなボタン */
+    font-size: 32px;
+    font-weight: 700;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-radius: 20px;
+}
+
+/* メインボタン（出勤・退勤）：黒背景に白文字 */
+.btn-main {
+    background-color: #000000;
+    color: #FFFFFF;
+}
+
+.btn-main:hover {
+    background-color: #333;
+}
+
+/* サブボタン（休憩入・休憩戻）：白背景に黒枠 */
+.btn-sub {
+    background-color: #FFFFFF;
+    color: #000000;
+}
+
+.btn-sub:hover {
+    background-color: #f0f0f0;
+}
+
+
+/* お疲れ様メッセージ */
+.finish-message {
+    margin: 0 auto 20px;
+        /* 上0、左右オート（これで中央！）、下20px */
+    font-size: 26px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    color: #333;
+}
