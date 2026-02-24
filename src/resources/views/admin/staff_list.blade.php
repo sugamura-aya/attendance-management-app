@@ -42,7 +42,7 @@
 
         {{-- ページネーション --}}
         <div class="pagination">
-            {{ $attendances->links() }}
+            {{ $staffs->links() }}
         </div>
     </div>
 </div>

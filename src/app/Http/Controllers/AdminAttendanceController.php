@@ -25,7 +25,7 @@ class AdminAttendanceController extends Controller
         // 名前（user）と休憩（breakTimes）を一緒に持ってくる
         $attendances = Attendance::whereDate('date', $date->format('Y-m-d'))
             ->with(['user', 'breakTimes'])
-            ->get(15);
+            ->paginate(15);
 
         // 3. 画面へ（前日・翌日の日付も添えて）
         return view('admin.attendance_list', [
@@ -83,7 +83,7 @@ class AdminAttendanceController extends Controller
     public function showStaffList()
     {
         // userモデルから、一般ユーザー（role=0）だけを全員分取ってくる
-        $staffs = User::where('role', 0)->get(15);
+        $staffs = User::where('role', 0)->paginate(15);
 
         return view('admin.staff_list', compact('staffs'));
     }
