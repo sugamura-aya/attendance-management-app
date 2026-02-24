@@ -92,22 +92,29 @@ class AdminAttendanceController extends Controller
     // ⑪ スタッフ別勤怠一覧（管理者向け：表示）
     public function showStaffAttendance(Request $request, $id)
     {
-        // 1. 【モデル】から、そのスタッフ本人の情報を1件取得
+        // 1. userモデルから、そのスタッフ本人の情報を1件取得
         $user = User::findOrFail($id);
 
-        // 2. 【リクエスト】から表示したい月を取得（なければ今月）
-        $targetMonth = $request->input('month', Carbon::now()->format('Y-m'));
-        $startDate = Carbon::parse($targetMonth)->startOfMonth(); // 月初
-        $endDate = Carbon::parse($targetMonth)->endOfMonth();     // 月末
+        // 2. 表示したい月を決定（ユーザー側と同じロジックで統一）
+        $targetMonthStr = $request->input('month', Carbon::now()->format('Y-m'));
+        $currentMonth = Carbon::parse($targetMonthStr);
 
-        // 3. 【モデル】そのスタッフに紐づく、指定された月の勤怠データを取得
+        $startDate = $currentMonth->copy()->startOfMonth();
+        $endDate = $currentMonth->copy()->endOfMonth();
+
+        //  リンク用と表示用の月を作る
+        $prevMonth = $currentMonth->copy()->subMonth()->format('Y-m');
+        $nextMonth = $currentMonth->copy()->addMonth()->format('Y-m');
+        $displayMonth = $currentMonth->format('Y/m');
+
+        // 3. そのスタッフに紐づく、指定された月の勤怠データを取得
         $attendances = $user->attendances()
             ->whereBetween('date', [$startDate, $endDate])
             ->orderBy('date', 'asc')
-            ->with('breakTimes') // 休憩時間も一緒に持ってくる
+            ->with('breakTimes') // 休憩時間も一緒
             ->get();
 
-        return view('admin.staff_attendance_list', compact('user', 'attendances', 'targetMonth'));
+        return view('admin.staff_attendance_list', compact('user', 'attendances','displayMonth', 'prevMonth', 'nextMonth'));
     }
 
 

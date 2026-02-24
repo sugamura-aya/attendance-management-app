@@ -1,0 +1,163 @@
+/* 1. ページ全体のコンテナ */
+.attendance-list-page {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0px 20px;
+}
+
+.attendance-list__content {
+    max-width: 900px;
+    margin: 0 300px;
+    margin-top: 90px;
+
+}
+
+/* 2. 見出し */
+.title {
+    border-left: 8px solid #000000;
+    /* 左端だけに8pxの太さの線を引く */
+    padding-left: 15px;
+    /* 文字と左線の間に少しスキマを作る */
+    font-size: 30px;
+    font-weight: 700;
+    text-align: left;
+    margin-bottom: 40px;
+    color: #000000;
+}
+
+/* 3. 月選択（Flexboxで横並び！） */
+.month-selection {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    /* 縦方向の真ん中を揃える */
+    width: 100%;
+    /* 横幅いっぱい使う */
+    height: 60px;
+    margin: 20px auto;
+    /* 真ん中に寄せて上下に余白 */
+    font-size: 16px;
+    font-weight: 700;
+    color: #737373;
+    letter-spacing: 0.15em;
+    background-color: #FFFFFF;
+    padding: 0 10px;
+    border-radius: 10px;
+}
+
+/* 各グループ（前月・当月・翌月）の調整 */
+.previous-month,
+.relevant-month,
+.following-month {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    /* アイコンと文字の間のスキマ */
+}
+
+.month-display {
+    font-size: 20px;
+    font-weight: 700;
+    font-family: 'Inter', sans-serif;
+    /* 保存済みのInterフォント */
+    color: #000000;
+    letter-spacing: 0.05em;
+}
+
+/* アイコンのサイズ調整 */
+.calendar-icon {
+    width: 25px;
+    height: 25px;
+    object-fit: contain;
+}
+
+.right-arrow-icon,
+.left-arrow-icon {
+    width: 20px;
+    height: 14.78px;
+    object-fit: contain;
+    opacity: 0.5;
+    /* 0〜1の間で調整。黒画像を灰色に近づける */
+}
+
+/* 翌月の矢印だけ180度回転させる */
+.left-arrow-icon {
+    transform: rotate(180deg);
+}
+
+.arrow-icon:hover {
+    opacity: 0.6;
+    /* マウスを乗せた時の遊び */
+}
+
+/* 4. テーブル全体のスタイル */
+.attendance-list__table {
+    width: 100%;
+    margin-top: 45px;
+    border-collapse: separate;
+    /* 角丸を効かせるために重要！ */
+    border-spacing: 0;
+    /* セル同士の隙間をゼロにする */
+    background-color: #FFFFFF;
+    border-radius: 10px;
+    overflow: hidden;
+    /* 中身がはみ出さないようにする */
+}
+
+/* 左上の見出し（日付のところ）を丸める */
+.attendance-list__table thead tr:first-child th:first-child {
+    border-top-left-radius: 10px;
+}
+
+/* 右上の見出し（詳細のところ）を丸める */
+.attendance-list__table thead tr:first-child th:last-child {
+    border-top-right-radius: 10px;
+}
+
+/* 5. テーブルの見出し (th) */
+.attendance-list__table th {
+    background-color: #FFFFFF;
+    height: 45px;
+    line-height: 45px;
+    padding: 0 35px;
+    border-bottom: 3px solid #E1E1E1;
+    text-align: left;
+    color: #666;
+    font-weight: bold;
+}
+
+.label {
+    font-size: 16px;
+    font-weight: 700;
+    color: #737373;
+    letter-spacing: 0.05em;
+    font-family: 'Inter', sans-serif;
+}
+
+/* 6. テーブルのデータ行 (td) */
+.attendance-list__table td {
+    padding: 0 30px;
+    line-height: 50px;
+    height: 50px;
+    border-bottom: 2px solid #E1E1E1;
+    font-weight: 700;
+    font-size: 16px;
+    color: #737373;
+    font-family: 'Inter', sans-serif;
+    vertical-align: middle;
+    /* 真ん中に揃えるおまじない */
+}
+
+/* 7. 詳細ボタン */
+.detail-button {
+    display: inline-block;
+    padding: 5px 0px;
+    background-color: #fff;
+    border-radius: 4px;
+    font-weight: 700;
+    font-size: 16px;
+    color: #000000;
+    text-decoration: none;
+    transition: all 0.3s;
+    cursor: pointer;
+}

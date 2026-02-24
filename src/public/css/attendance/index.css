@@ -39,7 +39,6 @@
 
 .date-text {
     margin: 0 auto 20px;/* 上0、左右オート（これで中央！）、下20px */
-    width: 332px;
     height: 48px;
     font-size: 40px;
     font-weight: 400;

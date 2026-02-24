@@ -18,7 +18,7 @@ class AttendanceController extends Controller
     {
         // 1. 【年月日・時刻の表示用】
         // Carbonを使って「今」の情報を取得
-        $today = Carbon::now()->format('Y年m月d日');
+        $today = Carbon::now()->isoFormat('YYYY年M月D日(ddd)');
         $now = Carbon::now()->format('H:i');
 
         // 2. 【今日の勤務状態のチェック】
@@ -155,19 +155,27 @@ class AttendanceController extends Controller
     public function list(Request $request)
     {
         // 1. 【表示したい月を決める】
-        $targetMonth = $request->input('month', Carbon::now()->format('Y-m'));
-        $startDate = Carbon::parse($targetMonth)->startOfMonth(); // 月初
-        $endDate = Carbon::parse($targetMonth)->endOfMonth();     // 月末
+        $targetMonthStr = $request->input('month', Carbon::now()->format('Y-m'));
+        $currentMonth = Carbon::parse($targetMonthStr);
+
+        $startDate = $currentMonth->copy()->startOfMonth();
+        $endDate = $currentMonth->copy()->endOfMonth();
+
+        //  前月と翌月の日付を作っておく（リンク用）
+        $prevMonth = $currentMonth->copy()->subMonth()->format('Y-m');
+        $nextMonth = $currentMonth->copy()->addMonth()->format('Y-m');
+        
+        // 表示用の月名 (2026/2 の形)
+        $displayMonth = $currentMonth->format('Y/m');
 
         // 2. 【データの取得】
-        // ログイン中の自分の、指定された月のデータを月初から順（asc）に取得（dateカラムデータだけ指定の内容で取得）
         $attendances = Attendance::where('user_id', Auth::id())
-            ->whereBetween('date', [$startDate, $endDate]) // 月初から月末まで
-            ->orderBy('date', 'asc') // 月初を先頭に
+            ->whereBetween('date', [$startDate, $endDate])
+            ->orderBy('date', 'asc')
             ->with('breakTimes') 
             ->get();
 
-        return view('attendance.list', compact('attendances', 'targetMonth'));
+        return view('attendance.list', compact('attendances', 'displayMonth', 'prevMonth', 'nextMonth'));
     }
 
     // ➄ 勤怠詳細（表示）

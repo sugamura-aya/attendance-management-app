@@ -45,15 +45,23 @@
                     @else
                         {{-- 【一般ユーザー用メニュー】ログイン中 ＆ role=0 --}}
                         <nav class="header__nav">
-                            @if($status !== '退勤済')
-                                {{-- 【退勤打刻前】の表示 --}}
+                            @if(isset($status))
+                                {{-- 打刻ページなど、$status 変数が存在する場合 --}}
+                                @if($status !== '退勤済')
+                                    {{-- 【退勤打刻前】の表示 --}}
+                                    <a class="nav__item" href="{{ route('attendance.index') }}">勤怠</a>
+                                    <a class="nav__item" href="{{ route('attendance.list') }}">勤怠一覧</a>
+                                    <a class="nav__item" href="{{ route('stamp_correction_request.list') }}">申請</a>
+                                @else
+                                    {{-- 【退勤後】の表示 --}}
+                                    <a class="nav__item" href="{{ route('attendance.list') }}">今月の出勤一覧</a>
+                                    <a class="nav__item" href="{{ route('stamp_correction_request.list') }}">申請一覧</a>
+                                @endif
+                            @else
+                                {{-- 一覧ページなど、$status 自体が存在しない場合のデフォルト表示 --}}
                                 <a class="nav__item" href="{{ route('attendance.index') }}">勤怠</a>
                                 <a class="nav__item" href="{{ route('attendance.list') }}">勤怠一覧</a>
                                 <a class="nav__item" href="{{ route('stamp_correction_request.list') }}">申請</a>
-                            @else
-                                {{-- 【退勤後】の表示 --}}
-                                <a class="nav__item" href="{{ route('attendance.list') }}">今月の出勤一覧</a>
-                                <a class="nav__item" href="{{ route('stamp_correction_request.list') }}">申請一覧</a>
                             @endif
 
                             {{-- ログアウトは共通 --}}
