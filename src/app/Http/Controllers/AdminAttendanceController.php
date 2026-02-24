@@ -25,7 +25,7 @@ class AdminAttendanceController extends Controller
         // 名前（user）と休憩（breakTimes）を一緒に持ってくる
         $attendances = Attendance::whereDate('date', $date->format('Y-m-d'))
             ->with(['user', 'breakTimes'])
-            ->get();
+            ->get(15);
 
         // 3. 画面へ（前日・翌日の日付も添えて）
         return view('admin.attendance_list', [
@@ -83,7 +83,7 @@ class AdminAttendanceController extends Controller
     public function showStaffList()
     {
         // userモデルから、一般ユーザー（role=0）だけを全員分取ってくる
-        $staffs = User::where('role', 0)->get();
+        $staffs = User::where('role', 0)->get(15);
 
         return view('admin.staff_list', compact('staffs'));
     }
@@ -119,21 +119,27 @@ class AdminAttendanceController extends Controller
 
 
     // ⑫ 申請一覧画面（管理者向け：表示）
-    public function index()
+    public function index(Request $request)
     {
         // 1. 全スタッフの「承認待ち(status=0)」の申請を、新しい順に取得
         $pendingRequests = AttendanceRequest::with('user')
             ->where('status', 0)
             ->orderBy('created_at', 'desc')
-            ->get();
+            ->paginate(15)
+            ->withQueryString();
 
         // 2. 全スタッフの「承認済み(status=1)」の申請を、新しい順に取得
         $approvedRequests = AttendanceRequest::with('user')
             ->where('status', 1)
             ->orderBy('created_at', 'desc')
-            ->get();
+            ->paginate(15)
+            ->withQueryString();
 
-        return view('admin.request_list', compact('pendingRequests', 'approvedRequests'));
+        return view('admin.request_list', [
+            'pendingRequests' => $pendingRequests,
+            'approvedRequests' => $approvedRequests,
+            'tab' => $request->query('tab', 'pending') // 追加：どっちのタブか判定用
+        ]);
     }
 
     // ⑬ 修正申請承認画面（管理者向け：表示）

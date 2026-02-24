@@ -1,4 +1,4 @@
-/*【画面ID:12申請一覧画面】*/
+/*【画面ID:08勤怠一覧画面】*/
 
 /* 1. ページ全体のコンテナ */
 .attendance-list-page {
@@ -27,48 +27,69 @@
     color: #000000;
 }
 
-/* 3. タブ部分 */
-.tab-nav {
-    margin-bottom: 30px;
-    border-bottom: 1px solid #000000;
-    /* 全体の下線 */
-}
-
-.tab-list {
+/* 3. 月選択（Flexboxで横並び！） */
+.month-selection {
     display: flex;
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-.tab-item {
-    margin-right: 40px;
-    /* タブ同士の隙間 */
-}
-
-.tab-link {
-    display: inline-block;
-    padding: 10px 40px;
-    text-decoration: none;
-    color: #000000;
-    font-weight: 400;
+    justify-content: space-between;
+    align-items: center;
+    /* 縦方向の真ん中を揃える */
+    width: 100%;
+    /* 横幅いっぱい使う */
+    height: 60px;
+    margin: 20px auto;
+    /* 真ん中に寄せて上下に余白 */
     font-size: 16px;
-    letter-spacing: 0.15em;
-    transition: all 0.3s;
-}
-
-/* 現在選ばれているタブのスタイル */
-.tab-link--active {
-    color: #000000;
     font-weight: 700;
-    font-size: 16px;
+    color: #737373;
     letter-spacing: 0.15em;
-    margin-bottom: -2px;
-    /* 親のborderと重ねて綺麗に見せる */
+    background-color: #FFFFFF;
+    padding: 0 10px;
+    border-radius: 10px;
 }
 
-.tab-link:hover {
+/* 各グループ（前月・当月・翌月）の調整 */
+.previous-month,
+.relevant-month,
+.following-month {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    /* アイコンと文字の間のスキマ */
+}
+
+.month-display {
+    font-size: 20px;
+    font-weight: 700;
+    font-family: 'Inter', sans-serif;
+    /* 保存済みのInterフォント */
     color: #000000;
+    letter-spacing: 0.05em;
+}
+
+/* アイコンのサイズ調整 */
+.calendar-icon {
+    width: 25px;
+    height: 25px;
+    object-fit: contain;
+}
+
+.right-arrow-icon,
+.left-arrow-icon {
+    width: 20px;
+    height: 14.78px;
+    object-fit: contain;
+    opacity: 0.5;
+    /* 0〜1の間で調整。黒画像を灰色に近づける */
+}
+
+/* 翌月の矢印だけ180度回転させる */
+.left-arrow-icon {
+    transform: rotate(180deg);
+}
+
+.arrow-icon:hover {
+    opacity: 0.6;
+    /* マウスを乗せた時の遊び */
 }
 
 /* 4. テーブル全体のスタイル */
@@ -121,10 +142,9 @@
     padding: 0 30px;
     line-height: 50px;
     height: 50px;
-    border-bottom: 3px solid #E1E1E1;
+    border-bottom: 2px solid #E1E1E1;
     font-weight: 700;
     font-size: 16px;
-    letter-spacing: 0.15em;
     color: #737373;
     font-family: 'Inter', sans-serif;
     vertical-align: middle;
@@ -139,7 +159,6 @@
     border-radius: 4px;
     font-weight: 700;
     font-size: 16px;
-    letter-spacing: 0.15em;
     color: #000000;
     text-decoration: none;
     transition: all 0.3s;

@@ -65,7 +65,7 @@
                     <td>{{ $attendance->getFormattedTotalWorkingTime() }}</td>
                     
                     <td>
-                        <a href="{{ route('attendance.show', $attendance->id) }}" class="detail-button">詳細</a>
+                        <a href="{{ route('admin.attendance.show', $attendance->id) }}" class="detail-button">詳細</a>
                     </td>
                 </tr>
                 @endforeach

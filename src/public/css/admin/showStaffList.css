@@ -1,4 +1,4 @@
-/*【画面ID:12申請一覧画面】*/
+/*【画面ID:10スタッフ一覧画面】*/
 
 /* 1. ページ全体のコンテナ */
 .attendance-list-page {
@@ -10,7 +10,7 @@
 .attendance-list__content {
     max-width: 900px;
     margin: 0 300px;
-    margin-top: 90px;
+    margin-top: 110px;
 
 }
 
@@ -23,55 +23,11 @@
     font-size: 30px;
     font-weight: 700;
     text-align: left;
-    margin-bottom: 40px;
+    margin-bottom: 90px;
     color: #000000;
 }
 
-/* 3. タブ部分 */
-.tab-nav {
-    margin-bottom: 30px;
-    border-bottom: 1px solid #000000;
-    /* 全体の下線 */
-}
-
-.tab-list {
-    display: flex;
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-.tab-item {
-    margin-right: 40px;
-    /* タブ同士の隙間 */
-}
-
-.tab-link {
-    display: inline-block;
-    padding: 10px 40px;
-    text-decoration: none;
-    color: #000000;
-    font-weight: 400;
-    font-size: 16px;
-    letter-spacing: 0.15em;
-    transition: all 0.3s;
-}
-
-/* 現在選ばれているタブのスタイル */
-.tab-link--active {
-    color: #000000;
-    font-weight: 700;
-    font-size: 16px;
-    letter-spacing: 0.15em;
-    margin-bottom: -2px;
-    /* 親のborderと重ねて綺麗に見せる */
-}
-
-.tab-link:hover {
-    color: #000000;
-}
-
-/* 4. テーブル全体のスタイル */
+/* 3. テーブル全体のスタイル */
 .attendance-list__table {
     width: 100%;
     margin-top: 45px;
@@ -96,16 +52,17 @@
     border-top-right-radius: 10px;
 }
 
-/* 5. テーブルの見出し (th) */
+/* 4. テーブルの見出し (th) */
 .attendance-list__table th {
     background-color: #FFFFFF;
     height: 45px;
     line-height: 45px;
     padding: 0 35px;
     border-bottom: 3px solid #E1E1E1;
-    text-align: left;
+    text-align: center;
     color: #666;
     font-weight: bold;
+    letter-spacing: 0.15em;
 }
 
 .label {
@@ -116,22 +73,22 @@
     font-family: 'Inter', sans-serif;
 }
 
-/* 6. テーブルのデータ行 (td) */
+/* 5. テーブルのデータ行 (td) */
 .attendance-list__table td {
     padding: 0 30px;
     line-height: 50px;
     height: 50px;
-    border-bottom: 3px solid #E1E1E1;
+    border-bottom: 2px solid #E1E1E1;
     font-weight: 700;
     font-size: 16px;
-    letter-spacing: 0.15em;
     color: #737373;
     font-family: 'Inter', sans-serif;
-    vertical-align: middle;
-    /* 真ん中に揃えるおまじない */
+    vertical-align: middle;/* 真ん中に揃えるおまじない */
+    text-align: center;
+    letter-spacing: 0.15em;
 }
 
-/* 7. 詳細ボタン */
+/* 6. 詳細ボタン */
 .detail-button {
     display: inline-block;
     padding: 5px 0px;
@@ -139,11 +96,11 @@
     border-radius: 4px;
     font-weight: 700;
     font-size: 16px;
-    letter-spacing: 0.15em;
     color: #000000;
     text-decoration: none;
     transition: all 0.3s;
     cursor: pointer;
+    text-align: center;
 }
 
 /* =========================
