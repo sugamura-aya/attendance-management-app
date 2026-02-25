@@ -1,15 +1,15 @@
 /*【画面ID:11スタッフ別勤怠一覧画面】*/
 
 /* 1. ページ全体のコンテナ */
-.attendance-list-page {
+.staff-attendance-list-page {
     max-width: 1400px;
     margin: 0 auto;
     padding: 0px 20px;
 }
 
-.attendance-list__content {
+.staff-attendance-list__content {
     max-width: 900px;
-    margin: 0 300px;
+    margin: 0 200px;
     margin-top: 90px;
 
 }
@@ -93,7 +93,7 @@
 }
 
 /* 4. テーブル全体のスタイル */
-.attendance-list__table {
+.staff-attendance-list__table {
     width: 100%;
     margin-top: 45px;
     margin-bottom: 50px;
@@ -108,17 +108,17 @@
 }
 
 /* 左上の見出し（日付のところ）を丸める */
-.attendance-list__table thead tr:first-child th:first-child {
+.staff-attendance-list__table thead tr:first-child th:first-child {
     border-top-left-radius: 10px;
 }
 
 /* 右上の見出し（詳細のところ）を丸める */
-.attendance-list__table thead tr:first-child th:last-child {
+.staff-attendance-list__table thead tr:first-child th:last-child {
     border-top-right-radius: 10px;
 }
 
 /* 5. テーブルの見出し (th) */
-.attendance-list__table th {
+.staff-attendance-list__table th {
     background-color: #FFFFFF;
     height: 45px;
     line-height: 45px;
@@ -138,7 +138,7 @@
 }
 
 /* 6. テーブルのデータ行 (td) */
-.attendance-list__table td {
+.staff-attendance-list__table td {
     padding: 0 30px;
     line-height: 50px;
     height: 50px;

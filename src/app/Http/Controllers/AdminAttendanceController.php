@@ -43,7 +43,12 @@ class AdminAttendanceController extends Controller
         // 指定されたIDの勤怠データを、ユーザー情報と休憩情報と一緒に取得
         $attendance = Attendance::with(['user', 'breakTimes'])->findOrFail($id);
 
-        return view('admin.attendance_detail', compact('attendance'));
+        // 承認待ちの申請があるかチェック
+        $isPending = \App\Models\AttendanceRequest::where('attendance_id', $id)
+            ->where('status', 0) // 0: 承認待ち
+            ->exists();
+
+        return view('admin.attendance_detail', compact('attendance', 'isPending'));
     }
 
     // ⓽ 勤怠詳細画面（管理者向け：更新）
@@ -63,19 +68,22 @@ class AdminAttendanceController extends Controller
         // 申請ではなく管理者の直接修正なので、一度今の休憩を消して新しく作り直すのが一番確実で正確！
         $attendance->breakTimes()->delete();//AttendanceModelのリレーション（public function breakTimes()）関数を呼び出し、その取り出したデータを削除。
 
-        if ($request->has('breaks')) { //'breaks'=HTMLの入力フォームのname属性（この場合休憩時間を指す）→画面から休憩のデータが一つでも送られてきてるかを確認。
-            foreach ($request->breaks as $breakData) {
-                // start_time と end_time の両方が入っている場合のみ保存
-                if (!empty($breakData['start_time']) && !empty($breakData['end_time'])) {
+        if ($request->has('break_start')) {
+            foreach ($request->break_start as $index => $startTime) {
+                // 対になる終了時間を取得
+                $endTime = $request->break_end[$index] ?? null;
+
+                // 両方入力されている場合のみ保存
+                if (!empty($startTime) && !empty($endTime)) {
                     $attendance->breakTimes()->create([
-                        'start_time' => $breakData['start_time'],
-                        'end_time'   => $breakData['end_time'],
+                        'start_time' => $startTime,
+                        'end_time'   => $endTime,
                     ]);
                 }
             }
         }
 
-        return redirect()->route('admin.attendance.list')->with('success', '勤怠情報を修正しました');
+        return redirect()->route('admin.attendance.show', ['id' => $id])->with('success', '勤怠情報を修正しました');
     }
 
 
@@ -146,10 +154,13 @@ class AdminAttendanceController extends Controller
     public function showApproveForm($attendance_correct_request_id)
     {
         // 申請データを、紐づく休憩申請と一緒に取得
-        $attendanceRequest = AttendanceRequest::with(['user', 'breakTimeRequests'])
+        $attendance = AttendanceRequest::with(['user', 'breakTimeRequests'])
             ->findOrFail($attendance_correct_request_id);
 
-        return view('admin.approve_form', compact('attendanceRequest'));
+        // status が 0 なら「承認待ち」状態（$isPending = true）
+        $isPending = ($attendance->status === 0);
+
+        return view('admin.approve_form', compact('attendance', 'isPending'));
     }
 
     // ⑬ 修正申請承認処理（管理者向け：更新）
@@ -181,6 +192,6 @@ class AdminAttendanceController extends Controller
         // 5. 申請のステータスを「承認済み(1)」にする
         $attendanceRequest->update(['status' => 1]);
 
-        return redirect()->route('stamp_correction_request.list')->with('success', '申請を承認しました');
+        return redirect()->route('admin.stamp_correction_request.approve.show', ['attendance_correct_request_id' => $attendance_correct_request_id])->with('success', '申請を承認しました');
     }
 }

@@ -9,9 +9,8 @@
 
 .attendance-list__content{
     max-width: 900px;
-    margin:0 300px ;
+    margin:0 200px ;
     margin-top: 90px;
-
 }
 
 /* 2. 見出し */
@@ -25,7 +24,7 @@
     color: #000000;
 }
 
-/* 3. 月選択（Flexboxで横並び！） */
+/* 3. 月選択（Flexboxで横並び） */
 .month-selection {
     display: flex;
     justify-content: space-between;

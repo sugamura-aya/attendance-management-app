@@ -30,11 +30,11 @@ class AttendanceUpdateRequest extends FormRequest
             // 退勤
             'clock_out' => ['required', 'after:clock_in'],
 
-            // 2. 休憩開始は「出勤より後」かつ「退勤より前」
-            'break_start.*' => ['required', 'after:clock_in', 'before:clock_out'],
+            // 2. 休憩開始は　空でもOK、「出勤より後」かつ「退勤より前」
+            'break_start.*' => ['nullable', 'after:clock_in', 'before:clock_out'],
 
-            // 3. 休憩終了は「休憩開始より後」かつ「退勤より前」
-            'break_end.*'   => ['required', 'after:break_start.*', 'before:clock_out'],
+            // 3. 休憩終了は　空でもOK、「休憩開始より後」かつ「退勤より前」
+            'break_end.*'   => ['nullable', 'after:break_start.*', 'before:clock_out'],
 
             // 4. 備考
             'remarks' => ['required'],

@@ -185,7 +185,13 @@ class AttendanceController extends Controller
         // $idはAttendanceのidを指す
         $attendance = Attendance::with('breakTimes')->findOrFail($id);
 
-        return view('attendance.detail', compact('attendance'));
+        //「承認待ち申請」を探す
+        $isPending = AttendanceRequest::where('user_id', Auth::id())
+            ->where('date', $attendance->date) // その勤怠と同じ日付
+            ->where('status', 0)               // 承認待ち
+            ->exists(); // 存在するかどうかだけチェック
+
+        return view('attendance.detail', compact('attendance', 'isPending'));
     }
 
     // 申請登録処理（POST）
@@ -204,14 +210,23 @@ class AttendanceController extends Controller
 
         // 2. 【休憩申請】を保存（子）
         // 画面から送られてきた複数の休憩データを保存する
-        foreach ($request->breaks as $breakData) {
-            $breakRequest = new BreakTimeRequest();
-            $breakRequest->attendance_request_id = $attendanceRequest->id; // 親のIDを紐付け
-            $breakRequest->start_time = $breakData['start_time'];
-            $breakRequest->end_time = $breakData['end_time'];
-            $breakRequest->save();
+        // $request->break_start という配列があるかチェックして回す
+        if ($request->has('break_start')) {
+            foreach ($request->break_start as $index => $startTime) {
+                // 開始も終了も空っぽなら、その休憩は保存（申請）せずにスルーする
+                if (empty($startTime) && empty($request->break_end[$index])) {
+                    continue; 
+                }
+
+                $breakRequest = new BreakTimeRequest();
+                $breakRequest->attendance_request_id = $attendanceRequest->id;
+                $breakRequest->start_time = $startTime;
+                // 対応する end_time を取得
+                $breakRequest->end_time = $request->break_end[$index] ?? null;
+                $breakRequest->save();
+            }
         }
 
-        return redirect()->route('attendance.list')->with('success', '修正申請を提出しました');
+        return redirect()->route('attendance.show', ['id' => $id])->with('success', '修正申請を提出しました');
     }
 }

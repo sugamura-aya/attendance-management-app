@@ -6,15 +6,15 @@
 @endsection
 
 @section('content')
-<div class="attendance-list-page">
-    <div class="attendance-list__content">
+<div class="staff-list-page">
+    <div class="staff-list__content">
 
         {{--見出し--}}
         <h1 class="title">スタッフ一覧</h1>
 
 
         {{--スタッフ一覧表--}}
-        <table class="attendance-list__table">
+        <table class="staff-list__table">
             <thead>
                 <tr>
                     <th class="label">名前</th>

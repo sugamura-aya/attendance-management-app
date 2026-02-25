@@ -1,1 +1,225 @@
 /*【画面ID:09勤怠詳細画面】*/
+
+/*成功メッセージ*/
+.alert--success {
+    padding: 10px 30px;
+    border-color: #badbcc;
+    background-color: #d1e7dd;
+    color: #0f5132;
+    font-weight: 700;
+    font-size: 25px;
+}
+
+/* 1. ページ全体のコンテナ */
+.attendance-detail-page {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0px 20px;
+}
+
+.attendance-detail__content {
+    max-width: 900px;
+    margin: 0 200px;
+    margin-top: 90px;
+}
+
+/* 2. 見出し */
+.title {
+    border-left: 8px solid #000000;
+    /* 左端だけに8pxの太さの線を引く */
+    padding-left: 15px;
+    /* 文字と左線の間に少しスキマを作る */
+    font-size: 30px;
+    font-weight: 700;
+    text-align: left;
+    margin-bottom: 40px;
+    color: #000000;
+}
+
+/* 3. 詳細表（Flexboxで横並び） */
+.detail-table {
+    background-color: #FFFFFF;
+    border: 2px solid #E1E1E1;
+    /* 外枠を付けてから角を丸める */
+    border-radius: 10px;
+    overflow: hidden;
+    /* 中身が角からはみ出さないようにする */
+    border-bottom: none;
+    /* 重なり防止 */
+}
+
+.detail-group {
+    display: flex;
+    align-items: center;
+    /* ラベルと中身を上下中央に配置 */
+    border-bottom: 2px solid #E1E1E1;
+    /* 各行の下線 */
+    min-height: 90px;
+    /* heightだと中身が増えた時に突き抜けるのでmin-heightが安全 */
+    padding: 20px 0;
+}
+
+.detail-label {
+    width: 250px;
+    flex-shrink: 0;
+    /* 幅250pxを絶対に維持する（潰れないようにする） */
+    padding-left: 60px;
+    font-size: 16px;
+    font-weight: 700;
+    color: #737373;
+    letter-spacing: 0.05em;
+}
+
+.detail-value {
+    width: 320px;
+    display: flex;
+    /* 中身を左右に振るためにFlexにする */
+    flex-direction: column;
+    /* 横並びから「縦並び」に変更 */
+    align-items: flex-start;
+    /* 左端に揃える */
+    /*justify-content: center;/* 上下の中央付近に配置 */
+    font-size: 16px;
+    font-weight: 700;
+    color: #000000;
+    letter-spacing: 0.05em;
+    margin-left: 50px;
+}
+
+.text-name{
+    margin-left: 18px;
+}
+
+/* --- 時間（出勤・退勤・休憩）の均等配置 --- */
+.detail-value--time {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    /*justify-content: space-between; 始・〜・終を均等に置く */
+}
+
+/* 休憩時間のフォームセットを横に並べる */
+.input-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 100%;
+}
+
+/* --- 日付の左右振り分け --- */
+.detail-value--between {
+    width: 250px;
+    display: flex;
+    justify-content: space-between;
+    margin: 0 20px;
+}
+
+.input-time {
+    width: 100px;
+    padding: 8px;
+    font-size: 16px;
+    text-align: center;
+    /* 数字を真ん中に */
+    font-family: inherit;
+    border: 1px solid #E1E1E1;
+    border-radius: 4px;
+    font-size: 16px;
+    font-weight: 700;
+    color: #000000;
+    letter-spacing: 0.05em;
+}
+
+.range-separator {
+    margin: 0 40px;
+    font-size: 16px;
+    font-weight: 700;
+    color: #000000;
+    letter-spacing: 0.05em;
+}
+
+/* 時計アイコン（スピンボタン）を消すコード */
+.input-time::-webkit-calendar-picker-indicator {
+    display: none;
+    -webkit-appearance: none;
+}
+
+/* 備考欄の調整 */
+.textarea-remarks {
+    width: 100%;
+    /* detail-valueの幅(400px)いっぱいに広がる */
+    padding: 10px;
+    border: 1px solid #D9D9D9;
+    border-radius: 4px;
+    resize: none;
+    /* ユーザーが勝手にサイズ変更できないようにする */
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 700;
+    color: #000000;
+    letter-spacing: 0.05em;
+}
+
+.input-time[readonly],
+.textarea-remarks[readonly] {
+    background-color: #f5f5f5;
+    /* 薄いグレー */
+    color: #888;
+    /* 文字色も少し薄く */
+    cursor: not-allowed;
+    /* マウスカーソルを「禁止」のマークにする */
+}
+
+/* 承認待ちメッセージのスタイル */
+.pending-message {
+    color: #ff0000;
+    /* 赤色で警告感を出す */
+    font-size: 16px;
+    font-weight: 700;
+    margin-top: 10px;
+    letter-spacing: 0.05em;
+    height: 50px;
+    display: flex;
+    align-items: center;
+}
+
+/* エラーメッセージ */
+.error-message {
+    color: red;
+    font-size: 14px;
+    margin-top: 5px;
+}
+
+/* 5. 修正ボタン */
+.detail-actions {
+    margin-top: 40px;
+    max-width: 900px;
+    /* .attendance-detail__content の幅と同じにする(
+    表全体の右端に合わせる） */
+    display: flex;
+    justify-content: flex-end;
+    /* 中身（ボタン）を右端に寄せる */
+}
+
+.submit-button {
+    width: 130px;
+    height: 50px;
+    border: none;
+    background-color: #000000;
+    color: #FFFFFF;
+    font-size: 22px;
+    font-weight: 700;
+    border-radius: 5px;
+    cursor: pointer;
+    letter-spacing: 0.15em;
+
+    /* ★文字を上下左右のど真ん中に配置 */
+    display: flex;
+    justify-content: center;
+    /* 左右中央 */
+    align-items: center;
+    /* 上下中央 */
+}
+
+.submit-button:hover {
+    background-color: #333333;
+}

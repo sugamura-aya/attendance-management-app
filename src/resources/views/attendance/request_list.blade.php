@@ -5,8 +5,8 @@
 @endsection
 
 @section('content')
-<div class="attendance-list-page">
-    <div class="attendance-list__content">
+<div class="request-list-page">
+    <div class="request-list__content">
 
         {{-- 1. 見出し --}}
         <h1 class="title">申請一覧</h1>
@@ -32,7 +32,7 @@
         </nav>
 
         {{-- 3. テーブル部分 --}}
-        <table class="attendance-list__table">
+        <table class="request-list__table">
             <thead>
                 <tr>
                     <th class="label">状態</th>
@@ -58,10 +58,10 @@
                     <td>{{ $request->user->name }}</td>
                     
                     {{-- 対象日時 (例：2026/02/25) --}}
-                    <td>{{ \Carbon\Carbon::parse($request->attendance_date)->format('Y/m/d') }}</td>
+                    <td>{{ \Carbon\Carbon::parse($request->date)->format('Y/m/d') }}</td>
                     
                     {{-- 申請理由 --}}
-                    <td>{{ $request->reason }}</td>
+                    <td>{{ $request->remarks }}</td>
                     
                     {{-- 申請日時 --}}
                     <td>{{ $request->created_at->format('Y/m/d') }}</td>

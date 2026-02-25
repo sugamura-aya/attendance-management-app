@@ -6,8 +6,8 @@
 @endsection
 
 @section('content')
-<div class="attendance-list-page">
-    <div class="attendance-list__content">
+<div class="staff-attendance-list-page">
+    <div class="staff-attendance-list__content">
 
         {{--見出し--}}
         <h1 class="title">{{ $user->name }}さんの勤怠</h1>
@@ -36,7 +36,7 @@
         </div>
 
         {{--月次一覧表--}}
-        <table class="attendance-list__table">
+        <table class="staff-attendance-list__table">
             <thead>
                 <tr>
                     <th class="label">日付</th>

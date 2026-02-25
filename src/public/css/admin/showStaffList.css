@@ -1,15 +1,15 @@
 /*【画面ID:10スタッフ一覧画面】*/
 
 /* 1. ページ全体のコンテナ */
-.attendance-list-page {
+.staff-list-page {
     max-width: 1400px;
     margin: 0 auto;
     padding: 0px 20px;
 }
 
-.attendance-list__content {
+.staff-list__content {
     max-width: 900px;
-    margin: 0 300px;
+    margin: 0 200px;
     margin-top: 110px;
 
 }
@@ -28,7 +28,7 @@
 }
 
 /* 3. テーブル全体のスタイル */
-.attendance-list__table {
+.staff-list__table {
     width: 100%;
     margin-top: 45px;
     margin-bottom: 50px;
@@ -43,17 +43,17 @@
 }
 
 /* 左上の見出し（日付のところ）を丸める */
-.attendance-list__table thead tr:first-child th:first-child {
+.staff-list__table thead tr:first-child th:first-child {
     border-top-left-radius: 10px;
 }
 
 /* 右上の見出し（詳細のところ）を丸める */
-.attendance-list__table thead tr:first-child th:last-child {
+.staff-list__table thead tr:first-child th:last-child {
     border-top-right-radius: 10px;
 }
 
 /* 4. テーブルの見出し (th) */
-.attendance-list__table th {
+.staff-list__table th {
     background-color: #FFFFFF;
     height: 45px;
     line-height: 45px;
@@ -74,7 +74,7 @@
 }
 
 /* 5. テーブルのデータ行 (td) */
-.attendance-list__table td {
+.staff-list__table td {
     padding: 0 30px;
     line-height: 50px;
     height: 50px;

@@ -1,17 +1,15 @@
 /*【画面ID:12申請一覧画面】*/
 
 /* 1. ページ全体のコンテナ */
-.attendance-list-page {
+.request-list-page {
     max-width: 1400px;
     margin: 0 auto;
     padding: 0px 20px;
 }
 
-.attendance-list__content {
+.request-list__content {
     max-width: 900px;
-    margin: 0 300px;
-    margin-top: 90px;
-
+    margin: 90px auto;
 }
 
 /* 2. 見出し */
@@ -72,8 +70,12 @@
 }
 
 /* 4. テーブル全体のスタイル */
-.attendance-list__table {
+.request-list__table {
     width: 100%;
+    table-layout: fixed;
+    /* 列の幅を固定 */
+    min-width: 800px;
+    /* 800px以下にならないようにして横スクロールを出す（崩れ防止） */
     margin-top: 45px;
     margin-bottom: 50px;
     border-collapse: separate;
@@ -87,25 +89,28 @@
 }
 
 /* 左上の見出し（日付のところ）を丸める */
-.attendance-list__table thead tr:first-child th:first-child {
+.request-list__table thead tr:first-child th:first-child {
     border-top-left-radius: 10px;
 }
 
 /* 右上の見出し（詳細のところ）を丸める */
-.attendance-list__table thead tr:first-child th:last-child {
+.request-list__table thead tr:first-child th:last-child {
     border-top-right-radius: 10px;
 }
 
 /* 5. テーブルの見出し (th) */
-.attendance-list__table th {
+.request-list__table th {
+    white-space: nowrap;
+    /* 文字を絶対に折り返さない*/
+    overflow: hidden;
+    text-overflow: ellipsis;
+    /* 理由が長すぎたら「...」にする */
     background-color: #FFFFFF;
     height: 45px;
     line-height: 45px;
     padding: 0 35px;
     border-bottom: 3px solid #E1E1E1;
     text-align: left;
-    color: #666;
-    font-weight: bold;
 }
 
 .label {
@@ -117,8 +122,11 @@
 }
 
 /* 6. テーブルのデータ行 (td) */
-.attendance-list__table td {
-    padding: 0 30px;
+.request-list__table td {
+    white-space: nowrap;
+    /* 文字を絶対に折り返さない*/
+    overflow: hidden;
+    padding: 0 15px;
     line-height: 50px;
     height: 50px;
     border-bottom: 3px solid #E1E1E1;
@@ -131,10 +139,24 @@
     /* 真ん中に揃えるおまじない */
 }
 
+/* 申請理由の列（4番目）だけは折り返しを許可して、しっかり読めるようにする */
+.request-list__table td:nth-child(4) {
+    white-space: normal;
+    /* 折り返しを許可 */
+    line-height: 1.5;
+    /* 行間を少し広げて読みやすく */
+    text-overflow: clip;
+    /* 三点リーダーを解除 */
+    min-width: 200px;
+    /* 最低限の幅を確保 */
+    padding: 10px 10px;
+    /* 上下に少し余白を足す */
+}
+
 /* 7. 詳細ボタン */
 .detail-button {
     display: inline-block;
-    padding: 5px 0px;
+    padding: 5px 20px;
     background-color: #fff;
     border-radius: 4px;
     font-weight: 700;
