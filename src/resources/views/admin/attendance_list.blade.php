@@ -12,25 +12,25 @@
         {{--見出し(例：2026年2月24日の勤怠)--}}
         <h1 class="title">{{ $date->format('Y年n月j日') }}の勤怠</h1>
 
-        {{--月選択--}}
-        <div class="month-selection">
+        {{--日付選択--}}
+        <div class="date-selection">
 
-            <div class="previous-month">
+            <div class="previous-date">
                 <a href="{{ route('admin.attendance.list', ['date' => $prevDate]) }}">
-                    <img src="{{ asset('img/arrow.png') }}" alt="前月" class="right-arrow-icon">
+                    <img src="{{ asset('img/arrow.png') }}" alt="前日" class="right-arrow-icon">
                 </a>
-                <span class="month-selection">前月</span>
+                <span class="date-selection">前日</span>
             </div>
 
-            <div class="relevant-month">    
+            <div class="relevant-date">    
                 <img src="{{ asset('img/calendar.png') }}" alt="カレンダー―アイコン" class="calendar-icon">
-                <span class="month-display">{{ $date->format('Y/m/d') }}</span>
+                <span class="date-display">{{ $date->format('Y/m/d') }}</span>
             </div>
 
-            <div class="following-month">
-                <span class="month-selection">翌月</span>
+            <div class="following-date">
+                <span class="date-selection">翌日</span>
                 <a href="{{ route('admin.attendance.list', ['date' => $nextDate]) }}">
-                    <img src="{{ asset('img/arrow.png') }}" alt="翌月" class="left-arrow-icon">
+                    <img src="{{ asset('img/arrow.png') }}" alt="翌日" class="left-arrow-icon">
                 </a>
             </div>
         </div>

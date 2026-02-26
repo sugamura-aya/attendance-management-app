@@ -38,15 +38,31 @@ class AdminAttendanceController extends Controller
 
 
     // ⓽ 勤怠詳細画面（管理者向け：表示）
-    public function showDetail($id)
+    public function showDetail($id, Request $request)// Requestを追加してuser_idを受け取る
     {
-        // 指定されたIDの勤怠データを、ユーザー情報と休憩情報と一緒に取得
-        $attendance = Attendance::with(['user', 'breakTimes'])->findOrFail($id);
-
-        // 承認待ちの申請があるかチェック
-        $isPending = \App\Models\AttendanceRequest::where('attendance_id', $id)
-            ->where('status', 0) // 0: 承認待ち
-            ->exists();
+        // $id が日付形式（2026-02-13など）か、数字のIDかで処理を分ける
+        if (str_contains($id, '-')) {
+            // 日付なら、新規作成用の空モデルを作る
+            $date = $id;
+            $userId = $request->query('user_id'); // URLの ?user_id=... を取得
+            
+            $attendance = new Attendance([
+                'date' => $date,
+                'user_id' => $userId,
+            ]);
+            
+            // user情報をセットしておかないとViewで名前が表示できない
+            $attendance->load('user'); 
+            
+            $isPending = false;
+        } else {
+            // 数字のIDなら、既存データを取得
+            $attendance = Attendance::with(['user', 'breakTimes'])->findOrFail($id);
+            // 承認待ちの申請があるかチェック
+            $isPending = AttendanceRequest::where('attendance_id', $id)
+                ->where('status', 0)// 0: 承認待ち
+                ->exists();
+        }
 
         return view('admin.attendance_detail', compact('attendance', 'isPending'));
     }
@@ -54,19 +70,25 @@ class AdminAttendanceController extends Controller
     // ⓽ 勤怠詳細画面（管理者向け：更新）
     public function update(AttendanceUpdateRequest $request, $id)
     {
-        // 1. 対象の勤怠データを取得
-        $attendance = Attendance::findOrFail($id);
+        // 1. $id が日付なら「新規登録」、数字なら「更新」
+        if (str_contains($id, '-')) {
+            $attendance = new Attendance();
+            $attendance->user_id = $request->user_id; // Formにhiddenでuser_idを入れておく必要あり
+            $attendance->date = $id;
+        } else {
+            $attendance = Attendance::findOrFail($id);
+        }
 
-        // 2. 勤怠本番テーブル（attendances）を更新
-        $attendance->update([
-            'clock_in'  => $request->clock_in,
-            'clock_out' => $request->clock_out,
-            'remarks'   => $request->remarks,
-        ]);
+        // 2. 勤怠本番テーブルを保存・更新
+        $attendance->clock_in  = $request->clock_in;
+        $attendance->clock_out = $request->clock_out;
+        $attendance->remarks   = $request->remarks;
+        $attendance->save();
 
-        // 3. 休憩本番テーブル（break_times）の更新
+        // 3. 休憩テーブル（break_times）の更新
         // 申請ではなく管理者の直接修正なので、一度今の休憩を消して新しく作り直すのが一番確実で正確！
-        $attendance->breakTimes()->delete();//AttendanceModelのリレーション（public function breakTimes()）関数を呼び出し、その取り出したデータを削除。
+        //AttendanceModelのリレーション（public function breakTimes()）関数を呼び出し、その取り出したデータを削除。
+        $attendance->breakTimes()->delete();
 
         if ($request->has('break_start')) {
             foreach ($request->break_start as $index => $startTime) {
@@ -83,7 +105,7 @@ class AdminAttendanceController extends Controller
             }
         }
 
-        return redirect()->route('admin.attendance.show', ['id' => $id])->with('success', '勤怠情報を修正しました');
+        return redirect()->route('admin.attendance.show', ['id' => $attendance->id])->with('success', '勤怠情報を修正しました');
     }
 
 
@@ -110,17 +132,39 @@ class AdminAttendanceController extends Controller
         $startDate = $currentMonth->copy()->startOfMonth();
         $endDate = $currentMonth->copy()->endOfMonth();
 
-        //  リンク用と表示用の月を作る
+        // 3. 既存の勤怠データを日付をキーにして取得
+        $dbAttendances = $user->attendances()
+            ->whereBetween('date', [$startDate, $endDate])
+            ->with('breakTimes')
+            ->get()
+            ->keyBy('date'); // 日付で検索しやすくする
+
+        // 4. 1ヶ月分の全日付をループして、データがなければ空で作る
+        $attendances = [];
+        for ($date = $startDate->copy(); $date->lte($endDate); $date->addDay()) {
+            $dateStr = $date->format('Y-m-d');
+            if ($dbAttendances->has($dateStr)) {
+                $attendances[] = $dbAttendances[$dateStr];
+            } else {
+                // データがない日は空のAttendanceモデルを作る（保存はしない）
+                $attendances[] = new Attendance([
+                    'user_id' => $user->id,
+                    'date' => $dateStr,
+                ]);
+            }
+        }
+
+        // 5. リンク用と表示用の月を作る
         $prevMonth = $currentMonth->copy()->subMonth()->format('Y-m');
         $nextMonth = $currentMonth->copy()->addMonth()->format('Y-m');
         $displayMonth = $currentMonth->format('Y/m');
 
         // 3. そのスタッフに紐づく、指定された月の勤怠データを取得
-        $attendances = $user->attendances()
-            ->whereBetween('date', [$startDate, $endDate])
-            ->orderBy('date', 'asc')
-            ->with('breakTimes') // 休憩時間も一緒
-            ->get();
+        //$attendances = $user->attendances()
+            //->whereBetween('date', [$startDate, $endDate])
+            //->orderBy('date', 'asc')
+            //->with('breakTimes') // 休憩時間も一緒
+            //->get();
 
         return view('admin.staff_attendance_list', compact('user', 'attendances','displayMonth', 'prevMonth', 'nextMonth'));
     }

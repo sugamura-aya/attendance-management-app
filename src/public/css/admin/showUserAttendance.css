@@ -28,7 +28,7 @@
 }
 
 /* 3. 月選択（Flexboxで横並び！） */
-.month-selection {
+.date-selection {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -48,16 +48,16 @@
 }
 
 /* 各グループ（前月・当月・翌月）の調整 */
-.previous-month,
-.relevant-month,
-.following-month {
+.previous-date,
+.relevant-date,
+.following-date {
     display: flex;
     align-items: center;
     gap: 8px;
     /* アイコンと文字の間のスキマ */
 }
 
-.month-display {
+.date-display {
     font-size: 20px;
     font-weight: 700;
     font-family: 'Inter', sans-serif;
@@ -82,7 +82,7 @@
     /* 0〜1の間で調整。黒画像を灰色に近づける */
 }
 
-/* 翌月の矢印だけ180度回転させる */
+/* 翌日の矢印だけ180度回転させる */
 .left-arrow-icon {
     transform: rotate(180deg);
 }

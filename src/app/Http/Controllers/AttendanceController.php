@@ -164,16 +164,31 @@ class AttendanceController extends Controller
         //  前月と翌月の日付を作っておく（リンク用）
         $prevMonth = $currentMonth->copy()->subMonth()->format('Y-m');
         $nextMonth = $currentMonth->copy()->addMonth()->format('Y-m');
-        
-        // 表示用の月名 (2026/2 の形)
         $displayMonth = $currentMonth->format('Y/m');
 
-        // 2. 【データの取得】
-        $attendances = Attendance::where('user_id', Auth::id())
+        // 2. 【DBから既存データを取得（あとで検索しやすいように keyBy するのがコツ！）】
+        $dbAttendances = Attendance::where('user_id', Auth::id())
             ->whereBetween('date', [$startDate, $endDate])
-            ->orderBy('date', 'asc')
-            ->with('breakTimes') 
-            ->get();
+            ->with('breakTimes')
+            ->get()
+            ->keyBy('date'); // 日付をキーにして取り出しやすくする
+
+        // 3. 【1日から末日までループして、全日付のリストを作る】
+        $attendances = [];
+        for ($date = $startDate->copy(); $date->lte($endDate); $date->addDay()) {
+            $dateStr = $date->format('Y-m-d');
+            
+            // その日のデータがあればそれを使う、なければ空のインスタンスを作る
+            if (isset($dbAttendances[$dateStr])) {
+                $attendances[] = $dbAttendances[$dateStr];
+            } else {
+                // ここがポイント！DBにない日も、日付だけ持ったモデルを仮で作る
+                $attendances[] = new Attendance([
+                    'date' => $dateStr,
+                    'user_id' => Auth::id(),
+                ]);
+            }
+        }
 
         return view('attendance.list', compact('attendances', 'displayMonth', 'prevMonth', 'nextMonth'));
     }
@@ -181,9 +196,27 @@ class AttendanceController extends Controller
     // ➄ 勤怠詳細（表示）
     public function show($id)
     {
-        // 指定されたIDの勤怠データを1件だけ取ってくる(紐づく休憩データも併せて取得)
-        // $idはAttendanceのidを指す
-        $attendance = Attendance::with('breakTimes')->findOrFail($id);
+        // $idがハイフンを含んでいる（日付 2026-02-15 などの形式）かチェック
+        if (str_contains($id, '-')) {
+            // 日付で検索
+            $attendance = Attendance::where('user_id', Auth::id())
+                ->where('date', $id)
+                ->with(['user', 'breakTimes'])
+                ->first();
+        
+            // 取得できなかったら（新規登録用）、その日付で空のモデルを作る
+            if (!$attendance) {
+                    $attendance = new Attendance([
+                        'date' => $id,
+                        'user_id' => Auth::id(),
+                    ]);
+                    $attendance->setRelation('user', Auth::user());
+                    $attendance->setRelation('breakTimes', collect());
+            }
+        } else {
+            // 普通にID（数字）で検索
+            $attendance = Attendance::with(['user', 'breakTimes'])->findOrFail($id);
+        }
 
         //「承認待ち申請」を探す
         $isPending = AttendanceRequest::where('user_id', Auth::id())
@@ -197,36 +230,45 @@ class AttendanceController extends Controller
     // 申請登録処理（POST）
     public function storeRequest(AttendanceUpdateRequest $request, $id)
     {
-        // 1. 【勤怠申請】を保存（親）
+        // 1. $id が日付形式（ハイフン入り）かチェックして、仕分けする
+        if (str_contains($id, '-')) {
+            $attendanceId = null; // まだ本番データがないので null
+            $redirectId = $id;    // リダイレクト先は日付を使う
+        } else {
+            $attendanceId = $id;  // 既存の勤怠IDを入れる
+            $redirectId = $id;    // リダイレクト先はIDを使う
+        }
+
+        // 2. 【勤怠申請】を保存
         $attendanceRequest = new AttendanceRequest(); 
         $attendanceRequest->user_id = Auth::id();
-        $attendanceRequest->attendance_id = $id; // どの勤怠に対する申請か
+        
+        // 判定した $attendanceId を入れる
+        $attendanceRequest->attendance_id = $attendanceId; 
+        
         $attendanceRequest->date = $request->date;
         $attendanceRequest->clock_in = $request->clock_in;
         $attendanceRequest->clock_out = $request->clock_out;
-        $attendanceRequest->remarks = $request->remarks; // 備考
-        $attendanceRequest->status = 0; // 承認待ち
+        $attendanceRequest->remarks = $request->remarks;
+        $attendanceRequest->status = 0;
         $attendanceRequest->save();
 
-        // 2. 【休憩申請】を保存（子）
-        // 画面から送られてきた複数の休憩データを保存する
-        // $request->break_start という配列があるかチェックして回す
+        // 2. 【休憩申請】を保存
         if ($request->has('break_start')) {
             foreach ($request->break_start as $index => $startTime) {
-                // 開始も終了も空っぽなら、その休憩は保存（申請）せずにスルーする
                 if (empty($startTime) && empty($request->break_end[$index])) {
                     continue; 
                 }
-
                 $breakRequest = new BreakTimeRequest();
                 $breakRequest->attendance_request_id = $attendanceRequest->id;
                 $breakRequest->start_time = $startTime;
-                // 対応する end_time を取得
                 $breakRequest->end_time = $request->break_end[$index] ?? null;
                 $breakRequest->save();
             }
         }
 
-        return redirect()->route('attendance.show', ['id' => $id])->with('success', '修正申請を提出しました');
-    }
+        // リダイレクト先も $redirectId にしておけば安心！
+        return redirect()->route('attendance.show', ['id' => $redirectId])
+            ->with('success', '修正申請を提出しました。承認されるまで元の勤怠データが表示されます。');
+        }
 }

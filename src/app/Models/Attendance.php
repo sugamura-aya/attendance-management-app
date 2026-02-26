@@ -61,7 +61,11 @@ class Attendance extends Model
     // --- 「H:i」形式の勤務合計時間を返す ---
     public function getFormattedTotalWorkingTime()
     {
-        if (!$this->clock_in || !$this->clock_out) return '-:-';
+        //出勤か退勤がなければ、-:-と返す
+        //if (!$this->clock_in || !$this->clock_out) return '-:-';
+
+        // 出勤か退勤がなければ、何も返さない（空っぽにする）
+        if (!$this->clock_in || !$this->clock_out) return '';
 
         $totalStaySeconds = \Carbon\Carbon::parse($this->clock_out)->diffInSeconds(\Carbon\Carbon::parse($this->clock_in));
         $workingSeconds = $totalStaySeconds - $this->getTotalBreakSeconds();

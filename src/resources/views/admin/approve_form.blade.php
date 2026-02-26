@@ -56,13 +56,6 @@
                         <span class="input-time">
                             {{ \Carbon\Carbon::parse($attendance->clock_out)->format('H:i') }}
                         </span>
-
-                        @error('clock_in') 
-                            <div class="error-message">{{ $message }}</div>
-                        @enderror
-                        @error('clock_out') 
-                            <div class="error-message">{{ $message }}</div>
-                        @enderror
                     </div>
                 </div>
 
@@ -79,13 +72,6 @@
 
                             <span class="input-time">{{ \Carbon\Carbon::parse($break->end_time)->format('H:i') }}</span>
                         </div>
-
-                        @error("break_start.{$index}") 
-                            <div class="error-message">{{ $message }}</div>
-                        @enderror
-                        @error("break_end.{$index}") 
-                            <div class="error-message">{{ $message }}</div>
-                        @enderror
                     </div>
                 </div>
                 @endforeach                
@@ -95,9 +81,6 @@
                     <label class="detail-label">備考</label>
                     <div class="detail-value">
                         <div class="text-remarks" style="white-space: pre-wrap;">{{ $attendance->remarks }}</div>
-                        @error('remarks')
-                            <div class="error-message">{{ $message }}</div>
-                        @enderror
                     </div>
                 </div>
             </form>
@@ -106,10 +89,10 @@
         {{-- 修正ボタン --}}
         <div class="detail-actions">
             @if($isPending)
-                {{-- まだ承認待ち(status=0)のときは、承認ボタンを出す --}}
+                {{-- 承認待ち(status=0)のときは、承認ボタンを出す --}}
                 <button type="submit" form="attendance-detail-form" class="submit-button">承認</button>
             @else
-                {{-- すでに承認済み(status=1)のときは、ボタンじゃなく「承認済み」という文字を出す --}}
+                {{-- すでに承認済み(status=1)のときは「承認済み」--}}
                  <p class="approved-text">承認済み</p>
             @endif
         </div>

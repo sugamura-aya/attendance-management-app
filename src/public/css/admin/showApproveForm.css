@@ -165,13 +165,6 @@
     /* マウスカーソルを「禁止」のマークにする */
 }
 
-/* エラーメッセージ */
-.error-message {
-    color: red;
-    font-size: 14px;
-    margin-top: 5px;
-}
-
 /* 4. 承認ボタン */
 .detail-actions {
     margin-top: 40px;
