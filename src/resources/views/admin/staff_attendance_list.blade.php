@@ -60,9 +60,9 @@
                     
                     {{-- モデルのメソッドを呼び出す --}}
                     {{--休憩合計時間--}}
-                    <td>{{ $attendance->id ? $attendance->getFormattedTotalBreakTime() : '00:00' }}</td>
+                    <td>{{ $attendance->id ? $attendance->getFormattedTotalBreakTime() : '' }}</td>
                     {{--（勤務時間）合計--}}
-                    <td>{{ $attendance->id ? $attendance->getFormattedTotalWorkingTime() : '00:00' }}</td>
+                    <td>{{ $attendance->id ? $attendance->getFormattedTotalWorkingTime() : '' }}</td>
                     
                     <td>
                         <a href="{{ route('admin.attendance.show', ['id' => $attendance->id ?? $attendance->date, 'user_id' => $user->id]) }}" class="detail-button">詳細</a>
