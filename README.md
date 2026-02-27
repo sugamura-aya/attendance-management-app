@@ -44,11 +44,15 @@ attendance-management-app（勤怠管理アプリ）
    `php artisan migrate`
 
 12. ダミーデータ投入（シーダー・ファクトリ使用）
+
     `php artisan db:seed`
+    
     ※管理者・テストユーザーの生成、および一般ユーザーの90日分勤怠データを自動生成
 
 13. シンボリックリンクの作成  （※必要に応じて実行）
+    
     `php artisan storage:link`
+    
 
 ## 使用技術・実行環境
 このアプリケーションは Laravel と Docker を用いて構築しています。
