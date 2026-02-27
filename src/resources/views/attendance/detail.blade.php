@@ -88,12 +88,12 @@
                                 @if($isPending) readonly @endif>
                         </div>
 
-                        @error("break_start.{$index}") 
-                            <div class="error-message">{{ $message }}</div>
-                        @enderror
-                        @error("break_end.{$index}") 
-                            <div class="error-message">{{ $message }}</div>
-                        @enderror
+                        @if($errors->has("break_start.$index"))
+                            <p class="error-message">{{ $errors->first("break_start.$index") }}</p>
+                        @endif
+                        @if($errors->has("break_end.$index"))
+                            <p class="error-message">{{ $errors->first("break_end.$index") }}</p>
+                        @endif
                     </div>
                 </div>
                 @endforeach
@@ -110,6 +110,14 @@
                             <span class="range-separator">〜</span>
                             <input type="time" name="break_end[{{ $nextIndex }}]" class="input-time">
                         </div>
+
+                        @if($errors->has("break_start.$nextIndex"))
+                            <p class="error-message">{{ $errors->first("break_start.$nextIndex") }}</p>
+                        @endif
+
+                        @if($errors->has("break_end.$nextIndex"))
+                            <p class="error-message">{{ $errors->first("break_end.$nextIndex") }}</p>
+                        @endif
                     </div>
                 </div>
                 @endif

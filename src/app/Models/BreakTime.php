@@ -10,13 +10,13 @@ class BreakTime extends Model
     use HasFactory;
 
     protected $fillable = [
-        'attendance_id', // どの勤務に紐づく休憩か/*リレーションを設定するため、外部キーのattendance_idにも許可リストをつける*/
+        'attendance_id', // どの勤務に紐づく休憩か（リレーションを設定するため、外部キーのattendance_idにも許可リストをつける）
         'start_time',    // 休憩開始
         'end_time',      // 休憩終了
     ];
 
-    /*～～～～～リレーション～～～～～～*/
 
+    /*～～～～～リレーション～～～～～～*/
     // ➀BreakTimeモデル：Attendanceモデル ＝ 子：親 ＝ 多：1
     // リレーションを繋げる（子モデル側）
     public function attendance()

@@ -23,43 +23,63 @@ class AttendanceUpdateRequest extends FormRequest
      */
     public function rules()
     {
-        return [
-            // 1. 出勤・退勤の前後チェック
-            // 出勤
+        //基本のルール(出勤・退勤・備考)
+        $rules = [
             'clock_in'  => ['required'],
-            // 退勤
             'clock_out' => ['required', 'after:clock_in'],
-
-            // 2. 休憩開始は　空でもOK、「出勤より後」かつ「退勤より前」
-            'break_start.*' => ['nullable', 'after:clock_in', 'before:clock_out'],
-
-            // 3. 休憩終了は　空でもOK、「休憩開始より後」かつ「退勤より前」
-            'break_end.*'   => ['nullable', 'after:break_start.*', 'before:clock_out'],
-
-            // 4. 備考
-            'remarks' => ['required'],
+            'remarks'   => ['required'],
         ];
+
+        // 2. 休憩時間のループバリデーション
+        // HTMLの name="break_start[0]" などに対応
+        $breakStarts = $this->input('break_start', []);
+        $breakEnds   = $this->input('break_end', []);
+
+        foreach ($breakStarts as $key => $val) {
+            // 開始か終了、どちらか一方でも入力があればチェック
+            if (!empty($breakStarts[$key]) || !empty($breakEnds[$key])) {
+                
+                // --- 休憩開始のルール ---
+                $rules["break_start.{$key}"] = [
+                    'required',
+                    function ($attribute, $value, $fail) {
+                        // 出勤より前、または退勤より後の場合はエラー
+                        if ($value < $this->clock_in || $value > $this->clock_out) {
+                            $fail('休憩時間が不適切な値です');
+                        }
+                    },
+                ];
+
+                // --- 休憩終了のルール ---
+                $rules["break_end.{$key}"] = [
+                    'required',
+                    function ($attribute, $value, $fail) use ($key, $breakStarts) {
+                        $bStart = $breakStarts[$key] ?? null;
+                        // 休憩開始より前、または退勤より後の場合はエラー
+                        if ($value < $bStart || $value > $this->clock_out) {
+                            $fail('休憩時間もしくは退勤時間が不適切な値です');
+                        }
+                    },
+                ];
+            }
+        }
+
+        return $rules;
     }
 
     public function messages()
     {
         return [
-            // 1に対応：出勤・退勤の不備
+            // 出勤・退勤の不備
             'clock_in.required'  => '出勤時間もしくは退勤時間が不適切な値です',
             'clock_out.after'    => '出勤時間もしくは退勤時間が不適切な値です',
             'clock_out.required' => '出勤時間もしくは退勤時間が不適切な値です',
 
-            // 2に対応：休憩開始の不備
+            // 休憩の「必須入力」エラー用（.* で全インデックスをカバー）
             'break_start.*.required' => '休憩時間が不適切な値です',
-            'break_start.*.after'  => '休憩時間が不適切な値です',
-            'break_start.*.before' => '休憩時間が不適切な値です',
+            'break_end.*.required'   => '休憩時間もしくは退勤時間が不適切な値です',
 
-            // 3に対応：休憩終了の不備（退勤との比較）
-            'break_end.*.required' => '休憩時間もしくは退勤時間が不適切な値です',
-            'break_end.*.after'  => '休憩時間もしくは退勤時間が不適切な値です',
-            'break_end.*.before' => '休憩時間もしくは退勤時間が不適切な値です',
-
-            // 4に対応：備考
+            // 備考の不備
             'remarks.required'   => '備考を記入してください',
         ];
     }

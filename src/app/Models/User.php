@@ -45,7 +45,6 @@ class User extends Authenticatable
 
 
     /*～～～～～リレーション～～～～～～*/
-
     // ➀Userモデル：Attendanceモデル ＝ 親：子 ＝ 1：多
     // リレーションを繋げる（親モデル側）
     public function attendances()

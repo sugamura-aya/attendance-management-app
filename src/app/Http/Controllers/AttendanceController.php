@@ -104,8 +104,8 @@ class AttendanceController extends Controller
         // 1.「休憩入」ボタンが押された日時情報を取得
         $now = Carbon::now();
 
-        // 2. 【重要：当日の勤怠記録探し】「当日の自分の出勤データ」を探し出す
-        // ➔ 休憩テーブルに「何番の出勤に紐づく休憩か」を記録する必要があるから
+        // 2. 【重要：当日の勤怠記録探し】
+        // 「当日の自分の出勤データ」を探し出す（休憩テーブルに「何番の出勤に紐づく休憩か」を記録する必要があるため）
         $attendance = Attendance::where('user_id', Auth::id())
             ->whereDate('date', Carbon::today())
             ->first();
@@ -166,7 +166,7 @@ class AttendanceController extends Controller
         $nextMonth = $currentMonth->copy()->addMonth()->format('Y-m');
         $displayMonth = $currentMonth->format('Y/m');
 
-        // 2. 【DBから既存データを取得（あとで検索しやすいように keyBy するのがコツ！）】
+        // 2. 【DBから既存データを取得（あとで検索しやすいように keyBy する）】
         $dbAttendances = Attendance::where('user_id', Auth::id())
             ->whereBetween('date', [$startDate, $endDate])
             ->with('breakTimes')
@@ -182,7 +182,7 @@ class AttendanceController extends Controller
             if (isset($dbAttendances[$dateStr])) {
                 $attendances[] = $dbAttendances[$dateStr];
             } else {
-                // ここがポイント！DBにない日も、日付だけ持ったモデルを仮で作る
+                // DBにない日も、日付だけ持ったモデルを仮で作る
                 $attendances[] = new Attendance([
                     'date' => $dateStr,
                     'user_id' => Auth::id(),
@@ -214,7 +214,7 @@ class AttendanceController extends Controller
                     $attendance->setRelation('breakTimes', collect());
             }
         } else {
-            // 普通にID（数字）で検索
+            // ID（数字）で検索
             $attendance = Attendance::with(['user', 'breakTimes'])->findOrFail($id);
         }
 
@@ -230,6 +230,8 @@ class AttendanceController extends Controller
     // 申請登録処理（POST）
     public function storeRequest(AttendanceUpdateRequest $request, $id)
     {
+        //dd($request->all());
+
         // 1. $id が日付形式（ハイフン入り）かチェックして、仕分けする
         if (str_contains($id, '-')) {
             $attendanceId = null; // まだ本番データがないので null
@@ -267,7 +269,7 @@ class AttendanceController extends Controller
             }
         }
 
-        // リダイレクト先も $redirectId にしておけば安心！
+        // リダイレクト先も $redirectId にしておく
         return redirect()->route('attendance.show', ['id' => $redirectId])
             ->with('success', '修正申請を提出しました。承認されるまで元の勤怠データが表示されます。');
         }

@@ -47,7 +47,8 @@ class FortifyServiceProvider extends ServiceProvider
                 return Limit::perMinute(10)->by($email . $request->ip());
             });
 
-            // ★ログイン時の認証ロジックをカスタマイズ（「一般ユーザー(role=0)だけ」がログインできるように制限をかける）
+            // ★ログイン時の認証ロジックをカスタマイズ
+            // （「一般ユーザー(role=0)だけ」がログインできるように制限をかける）
             Fortify::authenticateUsing(function ($request) {
                 $user = User::where('email', $request->email)->first();
 
@@ -58,7 +59,8 @@ class FortifyServiceProvider extends ServiceProvider
                     return $user;
                 }
                 
-                // 条件に合わなければログイン失敗（管理者のメールアドレスで一般ユーザー用のログインからログインできないようにする）
+                // 条件に合わなければログイン失敗
+                // （管理者のメールアドレスで一般ユーザー用のログインからログインできないようにする）
                 return null;
             });
     }

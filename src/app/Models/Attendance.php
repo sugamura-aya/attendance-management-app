@@ -10,7 +10,7 @@ class Attendance extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id', // 誰の勤怠か/*リレーションを設定するため、外部キーのuser_idにも許可リストをつける*/
+        'user_id', // 誰の勤怠か（リレーションを設定するため、外部キーのuser_idにも許可リストをつける）
         'date',      // 勤務日
         'clock_in',  // 出勤時間
         'clock_out', // 退勤時間
@@ -19,7 +19,6 @@ class Attendance extends Model
 
 
     /*～～～～～リレーション～～～～～～*/
-
     // ➀Attendanceモデル：Userモデル ＝ 子：親 ＝ 多：1
     // リレーションを繋げる（子モデル側）
     public function user()
@@ -39,6 +38,7 @@ class Attendance extends Model
 
 
     /*～計算ロジック～*/
+    //　➀【休憩時間】
     // --- 休憩の合計時間を秒で計算する関数 ---
     public function getTotalBreakSeconds()
     {
@@ -58,6 +58,7 @@ class Attendance extends Model
         return sprintf('%02d:%02d', floor($seconds / 3600), ($seconds / 60) % 60);
     }
 
+    //　➁【休憩時間】
     // --- 「H:i」形式の勤務合計時間を返す ---
     public function getFormattedTotalWorkingTime()
     {

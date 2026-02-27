@@ -51,7 +51,7 @@ class AdminAttendanceController extends Controller
                 'user_id' => $userId,
             ]);
             
-            // user情報をセットしておかないとViewで名前が表示できない
+            // user情報をセット（Viewで名前を表示させるため）
             $attendance->load('user'); 
             
             $isPending = false;
@@ -86,7 +86,7 @@ class AdminAttendanceController extends Controller
         $attendance->save();
 
         // 3. 休憩テーブル（break_times）の更新
-        // 申請ではなく管理者の直接修正なので、一度今の休憩を消して新しく作り直すのが一番確実で正確！
+        // 申請ではなく管理者の直接修正なので、一度今の休憩を消して新しく作り直す
         //AttendanceModelのリレーション（public function breakTimes()）関数を呼び出し、その取り出したデータを削除。
         $attendance->breakTimes()->delete();
 
@@ -95,8 +95,9 @@ class AdminAttendanceController extends Controller
                 // 対になる終了時間を取得
                 $endTime = $request->break_end[$index] ?? null;
 
-                // 両方入力されている場合のみ保存
-                if (!empty($startTime) && !empty($endTime)) {
+                //  どちらか一方でも入力があれば保存を試みる
+                // （バリデーションを通っているので、ここに来る時は両方入っているはず）
+                if (!empty($startTime) || !empty($endTime)) {
                     $attendance->breakTimes()->create([
                         'start_time' => $startTime,
                         'end_time'   => $endTime,
@@ -104,6 +105,9 @@ class AdminAttendanceController extends Controller
                 }
             }
         }
+
+        // 保存後のリダイレクト先も、IDか日付かで適切に振り分ける
+        $redirectId = $attendance->id ?: $attendance->date;
 
         return redirect()->route('admin.attendance.show', ['id' => $attendance->id])->with('success', '勤怠情報を修正しました');
     }
@@ -159,13 +163,6 @@ class AdminAttendanceController extends Controller
         $nextMonth = $currentMonth->copy()->addMonth()->format('Y-m');
         $displayMonth = $currentMonth->format('Y/m');
 
-        // 3. そのスタッフに紐づく、指定された月の勤怠データを取得
-        //$attendances = $user->attendances()
-            //->whereBetween('date', [$startDate, $endDate])
-            //->orderBy('date', 'asc')
-            //->with('breakTimes') // 休憩時間も一緒
-            //->get();
-
         return view('admin.staff_attendance_list', compact('user', 'attendances','displayMonth', 'prevMonth', 'nextMonth'));
     }
 
@@ -190,7 +187,7 @@ class AdminAttendanceController extends Controller
         return view('admin.request_list', [
             'pendingRequests' => $pendingRequests,
             'approvedRequests' => $approvedRequests,
-            'tab' => $request->query('tab', 'pending') // 追加：どっちのタブか判定用
+            'tab' => $request->query('tab', 'pending') // どっちのタブか判定
         ]);
     }
 
@@ -216,7 +213,7 @@ class AdminAttendanceController extends Controller
         // 2. 本番の勤怠データを取得
         $attendance = Attendance::findOrFail($attendanceRequest->attendance_id);
 
-        // 3. 申請内容を本番テーブルへ上書きコピー！
+        // 3. 申請内容を本番テーブルへ上書きコピー
         $attendance->update([
             'clock_in'  => $attendanceRequest->clock_in,
             'clock_out' => $attendanceRequest->clock_out,

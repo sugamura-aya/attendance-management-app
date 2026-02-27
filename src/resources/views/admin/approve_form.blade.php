@@ -1,3 +1,4 @@
+{{--画面ID13：修正申請承認画面--}}
 @extends('layouts.app')
 
 @section('css')
@@ -14,28 +15,28 @@
     @endif
 </div>
 
-<div class="attendance-detail-page">
-    <div class="attendance-detail__content">
+<div class="attendance-approve-page">
+    <div class="attendance-approve__content">
         <h1 class="title">勤怠詳細</h1>
 
-        <div class="detail-table">
-            <form id="attendance-detail-form" action="{{ route('admin.stamp_correction_request.approve.update', $attendance->id) }}" method="POST">
+        <div class="approve-table">
+            <form id="attendance-approve-form" action="{{ route('admin.stamp_correction_request.approve.update', $attendance->id) }}" method="POST">
                 @csrf
                 @method('PATCH')
                 
                 {{-- 1. 名前 --}}
-                <div class="detail-group">
-                    <label class="detail-label">名前</label>
-                    <div class="detail-value">
+                <div class="approve-group">
+                    <label class="approve-label">名前</label>
+                    <div class="approve-value">
                         <span class="text-name">{{ $attendance->user->name }}</span>
                     </div>
                 </div>
 
                 {{-- 2. 日付 --}}
-                <div class="detail-group">
-                    <label class="detail-label">日付</label>
-                    <div class="detail-value">
-                        <div class=" detail-value--between">
+                <div class="approve-group">
+                    <label class="approve-label">日付</label>
+                    <div class="approve-value">
+                        <div class=" approve-value--between">
                             <span>{{ \Carbon\Carbon::parse($attendance->date)->format('Y年') }}</span>
                             <span>{{ \Carbon\Carbon::parse($attendance->date)->format('n月j日') }}</span>
                         </div>
@@ -44,9 +45,9 @@
                 </div>
 
                 {{-- 3. 出勤・退勤 --}}
-                <div class="detail-group">
-                    <label class="detail-label">出勤・退勤</label>
-                    <div class="detail-value detail-value--time">
+                <div class="approve-group">
+                    <label class="approve-label">出勤・退勤</label>
+                    <div class="approve-value approve-value--time">
                         <span class="input-time">
                             {{ \Carbon\Carbon::parse($attendance->clock_in)->format('H:i') }}
                         </span>
@@ -61,10 +62,10 @@
 
                 {{-- 4. 休憩 --}}
                 @foreach($attendance->breakTimeRequests as $index => $break)
-                <div class="detail-group">
-                    <label class="detail-label">{{ $index === 0 ? '休憩' : '休憩' . ($index + 1) }}</label>
+                <div class="approve-group">
+                    <label class="approve-label">{{ $index === 0 ? '休憩' : '休憩' . ($index + 1) }}</label>
 
-                    <div class="detail-value">
+                    <div class="approve-value">
                         <div class="input-row">
                             <span class="input-time">{{ \Carbon\Carbon::parse($break->start_time)->format('H:i') }}</span>
 
@@ -77,20 +78,20 @@
                 @endforeach                
 
                 {{-- 5. 備考 --}}
-                <div class="detail-group">
-                    <label class="detail-label">備考</label>
-                    <div class="detail-value">
+                <div class="approve-group">
+                    <label class="approve-label">備考</label>
+                    <div class="approve-value">
                         <div class="text-remarks" style="white-space: pre-wrap;">{{ $attendance->remarks }}</div>
                     </div>
                 </div>
             </form>
         </div>
 
-        {{-- 修正ボタン --}}
-        <div class="detail-actions">
+        {{-- 承認ボタン --}}
+        <div class="approve-actions">
             @if($isPending)
                 {{-- 承認待ち(status=0)のときは、承認ボタンを出す --}}
-                <button type="submit" form="attendance-detail-form" class="submit-button">承認</button>
+                <button type="submit" form="attendance-approve-form" class="submit-button">承認</button>
             @else
                 {{-- すでに承認済み(status=1)のときは「承認済み」--}}
                  <p class="approved-text">承認済み</p>

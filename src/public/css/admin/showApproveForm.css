@@ -11,13 +11,13 @@
 }
 
 /* 1. ページ全体のコンテナ */
-.attendance-detail-page {
+.attendance-approve-page {
     max-width: 1400px;
     margin: 0 auto;
     padding: 0px 20px;
 }
 
-.attendance-detail__content {
+.attendance-approve__content {
     max-width: 900px;
     margin: 0 200px;
     margin-top: 90px;
@@ -37,7 +37,7 @@
 }
 
 /* 3. 詳細表（Flexboxで横並び） */
-.detail-table {
+.approve-table {
     background-color: #FFFFFF;
     border: 2px solid #E1E1E1;
     /* 外枠を付けてから角を丸める */
@@ -48,7 +48,7 @@
     /* 重なり防止 */
 }
 
-.detail-group {
+.approve-group {
     display: flex;
     align-items: center;
     /* ラベルと中身を上下中央に配置 */
@@ -59,7 +59,7 @@
     padding: 20px 0;
 }
 
-.detail-label {
+.approve-label {
     width: 250px;
     flex-shrink: 0;
     /* 幅250pxを絶対に維持する（潰れないようにする） */
@@ -70,7 +70,7 @@
     letter-spacing: 0.05em;
 }
 
-.detail-value {
+.approve-value {
     width: 320px;
     display: flex;
     /* 中身を左右に振るためにFlexにする */
@@ -91,7 +91,7 @@
 }
 
 /* --- 時間（出勤・退勤・休憩）の均等配置 --- */
-.detail-value--time {
+.approve-value--time {
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -106,7 +106,7 @@
 }
 
 /* --- 日付の左右振り分け --- */
-.detail-value--between {
+.approve-value--between {
     width: 250px;
     display: flex;
     justify-content: space-between;
@@ -138,7 +138,7 @@
 /* 備考欄の調整 */
 .textarea-remarks {
     width: 100%;
-    /* detail-valueの幅(400px)いっぱいに広がる */
+    /* approve-valueの幅(400px)いっぱいに広がる */
     padding: 10px;
     border: 1px solid #D9D9D9;
     border-radius: 4px;
@@ -166,10 +166,10 @@
 }
 
 /* 4. 承認ボタン */
-.detail-actions {
+.approve-actions {
     margin-top: 40px;
     max-width: 900px;
-    /* .attendance-detail__content の幅と同じにする(
+    /* .attendance-approve__content の幅と同じにする(
     表全体の右端に合わせる） */
     display: flex;
     justify-content: flex-end;

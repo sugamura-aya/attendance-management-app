@@ -10,7 +10,7 @@ class AttendanceRequest extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id',   // 誰の申請か/*リレーションを設定するため、外部キーのuser_idにも許可リストをつける*/
+        'user_id',   // 誰の申請か（リレーションを設定するため、外部キーのuser_idにも許可リストをつける）
         'attendance_id', // 「元々の勤怠データのID」を保存する場所
         'date',      // 修正したい日
         'clock_in',  // 修正後の出勤
@@ -19,8 +19,8 @@ class AttendanceRequest extends Model
         'status',    // 承認ステータス（承認待ち、承認済み、却下など）
     ];
 
-    /*～～～～～リレーション～～～～～～*/
 
+    /*～～～～～リレーション～～～～～～*/
     // ➀AttendanceRequestモデル：Userモデル ＝ 子：親 ＝ 多：1
     public function user()
     {

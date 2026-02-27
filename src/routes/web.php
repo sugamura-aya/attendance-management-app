@@ -49,7 +49,6 @@ Route::middleware(['auth', 'user'])->group(function () {
         Route::post('/attendance/edit/{id}', [AttendanceController::class, 'storeRequest'])->name('attendance.request.store');
 
     // ➅申請一覧画面（表示）※管理者用とパスが同じため、⑫と一つのミドルウェア内でルーティング設定する。
-    //Route::get('/stamp_correction_request/list', [AttendanceRequestController::class, 'index'])->name('attendance.request.list');
 });
 
 
@@ -82,7 +81,6 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin/attendance/staff/{id}', [AdminAttendanceController::class, 'showStaffAttendance'])->name('admin.attendance.staff.list');
 
     // ⑫申請一覧画面（表示）※一般ユーザー用とパスが同じため、➅と一つのミドルウェア内でルーティング設定する。
-    //Route::get('/stamp_correction_request/list', [AdminAttendanceController::class, 'index'])->name('admin.attendance.request.list');
 
     // ⑬修正申請承認画面（表示）
     Route::get('/stamp_correction_request/approve/{attendance_correct_request_id}', [AdminAttendanceController::class, 'showApproveForm'])->name('admin.stamp_correction_request.approve.show');
