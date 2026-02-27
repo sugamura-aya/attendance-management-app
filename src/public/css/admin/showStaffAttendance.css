@@ -162,3 +162,29 @@
     transition: all 0.3s;
     cursor: pointer;
 }
+
+.export-button{
+    margin-top: 20px;
+    /* テーブルとの間隔 */
+    display: flex;
+    /* フレックスボックス化 */
+    justify-content: flex-end;
+    /* 中身（ボタン）を右端に寄せる */
+}
+
+.export-button__submit{
+    width: 184px;
+    height: 50px;
+    background-color: #000000;
+    border-radius: 5px;
+    color: #FFFFFF;
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+}
+
+.export-button__submit:hover {
+    background-color:gray;
+    /* ホバーした時に少し色が変わる遊び心 */
+}

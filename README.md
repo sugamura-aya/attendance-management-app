@@ -91,6 +91,7 @@ attendance-management-app（勤怠管理アプリ）
 - 勤怠詳細画面（直接修正） : /admin/attendance/{id}
 - スタッフ一覧画面 : /admin/staff/list
 - スタッフ別勤怠一覧画面 : /admin/attendance/staff/{id}
+- 【応用】CSV出力処理 ： /admin/attendance/export/{id}
 - 申請一覧画面 : /stamp_correction_request/list （※管理者用）
 - 修正申請承認画面 : /stamp_correction_request/approve/{attendance_correct_request_id}
 
@@ -166,7 +167,6 @@ attendance-management-app（勤怠管理アプリ）
 ## 未実装（応用要件）
 - メールを用いた認証機能 
 - 認証メール再送機能 
-- csv出力機能実装
 - PHPunitを用いたテスト
 
 ## 補足（カスタム部分）

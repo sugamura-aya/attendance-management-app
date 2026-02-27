@@ -167,6 +167,66 @@ class AdminAttendanceController extends Controller
     }
 
 
+    // 【応用】csv出力処理
+    public function exportCsv(Request $request, $id)
+    {
+        // 1. 対象のユーザーと月を特定
+        $user = User::findOrFail($id);
+        $targetMonthStr = $request->input('month', \Carbon\Carbon::now()->format('Y-m'));
+        $currentMonth = \Carbon\Carbon::parse($targetMonthStr);
+
+        $startDate = $currentMonth->copy()->startOfMonth();
+        $endDate = $currentMonth->copy()->endOfMonth();
+
+        // 2. DBからその月の勤怠データを取得（日付をキーにして取り出しやすくする）
+        $dbAttendances = $user->attendances()
+            ->whereBetween('date', [$startDate, $endDate])
+            ->with('breakTimes')
+            ->get()
+            ->keyBy('date');
+
+        // 3. CSVのヘッダー（UIのラベルに合わせたよ！）
+        $csv = "日付,出勤,退勤,休憩,合計,詳細URL\n";
+
+        // 4. 1ヶ月分の日付をループ（データがない日も空行を作る！）
+        for ($date = $startDate->copy(); $date->lte($endDate); $date->addDay()) {
+            $dateStr = $date->format('Y-m-d');
+            $attendance = $dbAttendances->get($dateStr);
+
+            $clockIn = '';
+            $clockOut = '';
+            $breakTotal = '';
+            $workTotal = '';
+            $detailUrl = url("/admin/attendance/{$dateStr}?user_id={$user->id}");
+
+            // ★Modelのメソッドを使って精密にデータを入れる！
+            if ($attendance) {
+                $clockIn = $attendance->clock_in ? \Carbon\Carbon::parse($attendance->clock_in)->format('H:i') : '';
+                $clockOut = $attendance->clock_out ? \Carbon\Carbon::parse($attendance->clock_out)->format('H:i') : '';
+                
+                // 休憩合計（Modelのメソッド！）
+                $breakTotal = $attendance->getFormattedTotalBreakTime();
+                // 勤務合計（Modelのメソッド！）
+                $workTotal = $attendance->getFormattedTotalWorkingTime();
+            }
+
+            // 1行作成
+            $csv .= "{$date->format('m/d')},{$clockIn},{$clockOut},{$breakTotal},{$workTotal},{$detailUrl}\n";
+        }
+
+        // 5. お問合せフォームでも使った「SJIS変換」で文字化け防止
+        $csv = mb_convert_encoding($csv, 'SJIS-win', 'UTF-8');
+
+        // 6. ファイル名を作ってダウンロード！
+        $filename = "attendance_{$user->name}_{$targetMonthStr}.csv";
+        
+        return response($csv, 200, [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => "attachment; filename=\"{$filename}\"",
+        ]);
+    }
+
+
     // ⑫ 申請一覧画面（管理者向け：表示）
     public function index(Request $request)
     {

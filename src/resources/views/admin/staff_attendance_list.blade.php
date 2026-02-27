@@ -71,6 +71,14 @@
                 @endforeach
             </tbody>
         </table>
+
+        {{--【応用】csv出力処理--}}
+        <form action="{{ route('admin.attendance.export', ['id' => $user->id]) }}" method="GET" class='export-button'>
+            {{-- 送りたいデータ（月）を入れる --}}
+            <input type="hidden" name="month" value="{{ request('month', \Carbon\Carbon::now()->format('Y-m')) }}">
+            
+            <button type="submit" class="export-button__submit">CSV出力</button>
+        </form>
     </div>
 </div>
 @endsection

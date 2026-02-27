@@ -79,6 +79,8 @@ Route::middleware(['auth', 'admin'])->group(function () {
 
     // ⑪スタッフ別勤怠一覧（表示）
     Route::get('/admin/attendance/staff/{id}', [AdminAttendanceController::class, 'showStaffAttendance'])->name('admin.attendance.staff.list');
+        // 【応用】csv出力処理
+        Route::get('/admin/attendance/export/{id}', [AdminAttendanceController::class, 'exportCsv'])->name('admin.attendance.export');
 
     // ⑫申請一覧画面（表示）※一般ユーザー用とパスが同じため、➅と一つのミドルウェア内でルーティング設定する。
 
