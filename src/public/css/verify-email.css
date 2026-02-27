@@ -1,0 +1,92 @@
+/* 全体のフォントをInterに指定 */
+body {
+    font-family: 'Inter', "Noto Sans JP", sans-serif;
+    background-color: #F0EFF2;
+}
+
+/* ========== Header基盤 ========== */
+.header {
+    width: 100%;
+    /* PC (1400-1540px)」で崩さないため、黒い背景色は画面の端から端まで伸びるよう設定 */
+    background: black;
+}
+
+.header__inner {
+    height: 80px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1400px;
+    /* 「PC (1400-1540px)」で崩さないため */
+}
+
+/* ========== ロゴマーク ========== */
+.header__logo {
+    height: 36px;
+    width: auto;
+}
+
+
+/* ========== メインコンテンツエリア ========== */
+.container {
+    /* 画面の高さ(100vh)からヘッダー分(80px)を引いた高さの真ん中に置く */
+    min-height: calc(100vh - 80px);
+    display: flex;
+    flex-direction: column;
+    /* 縦に並べる */
+    justify-content: center;
+    /* 垂直方向の真ん中 */
+    align-items: center;
+    /* 水平方向の真ん中 */
+    text-align: center;
+    /* テキストも中央揃え */
+    padding: 0 20px;
+}
+
+/* メッセージの余白 */
+.container p {
+    margin-bottom: 30px;
+    line-height: 1.6;
+    font-size: 16px;
+}
+
+/* ========== ボタンとリンクのエリア ========== */
+.actions {
+    display: flex;
+    flex-direction: column;
+    /* ボタンとリンクを縦に並べる */
+    align-items: center;
+    /* 中央揃え */
+    gap: 20px;
+    /* ボタンとリンクの間の「遊び」 */
+}
+
+/* メインボタン（aタグ） */
+.actions__button-submit {
+    display: block;
+    /* 幅を指定するためにブロック化 */
+    width: 280px;
+    /* 好みの幅で精密に調整してね */
+    background-color: #000000;
+    color: #FFFFFF;
+    text-decoration: none;
+    /* 下線を消す */
+    padding: 15px 0;
+    border-radius: 5px;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+.actions__button-submit:hover {
+    background-color: #333333;
+}
+
+/* 再送リンク */
+.remail-link {
+    color: #333333;
+    font-size: 14px;
+    text-decoration: underline;
+    /* リンクっぽく下線 */
+}
