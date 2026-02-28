@@ -12,3 +12,6 @@ npm-debug.log
 yarn-error.log
 /.idea
 /.vscode
+
+# テストケース実装：GitHubにプッシュされないように.env.testingを追加する
+.env.testing
