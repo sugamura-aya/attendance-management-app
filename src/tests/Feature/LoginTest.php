@@ -11,6 +11,7 @@ class LoginTest extends TestCase
 {
     use RefreshDatabase; // テストごとにリフレッシュ
 
+    /*～～～～～～～～～テストケースID2～～～～～～～～～*/
     /* --- 一般ユーザーのログインテスト --- */
 
     public function test_user_email_is_required()
@@ -53,7 +54,7 @@ class LoginTest extends TestCase
     }
 
 
-
+    /*～～～～～～～～～テストケースID3～～～～～～～～～*/
     /* --- 管理者のログインテスト --- */
 
     public function test_admin_email_is_required()

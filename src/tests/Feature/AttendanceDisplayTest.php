@@ -16,6 +16,7 @@ class AttendanceDisplayTest extends TestCase
 {
     use RefreshDatabase;
 
+    /*～～～～～～～～～テストケースID4～～～～～～～～～*/
     /**
      * 【ユーザー側】➀打刻画面 
      * 日時取得機能：現在の日時情報がUIと同じ形式で出力されている
@@ -239,6 +240,7 @@ class AttendanceDisplayTest extends TestCase
     }
 
 
+    /*～～～～～～～～～テストケースID5～～～～～～～～～*/
     /**
      * 【ユーザー側】ステータス確認：勤務外（データなし）
      */

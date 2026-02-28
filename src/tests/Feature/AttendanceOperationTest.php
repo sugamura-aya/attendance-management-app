@@ -13,6 +13,7 @@ class AttendanceOperationTest extends TestCase
 {
     use RefreshDatabase;
 
+    /*～～～～～～～～～テストケースID6～～～～～～～～～*/
     /**
      * 出勤機能：出勤ボタンを押すと正しく記録される
      */
@@ -33,6 +34,8 @@ class AttendanceOperationTest extends TestCase
         ]);
     }
 
+
+    /*～～～～～～～～～テストケースID7～～～～～～～～～*/
     /**
      * 休憩開始機能：休憩ボタンを押すと正しく記録される
      */
@@ -89,6 +92,7 @@ class AttendanceOperationTest extends TestCase
         ]);
     }
 
+    /*～～～～～～～～～テストケースID8～～～～～～～～～*/
     /**
      * 退勤機能：退勤ボタンを押すと正しく記録される
      */

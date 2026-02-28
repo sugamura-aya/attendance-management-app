@@ -11,6 +11,7 @@ class RegisterTest extends TestCase
 {
     use RefreshDatabase; // テストごとにリフレッシュ
 
+    /*～～～～～～～～～テストケースID1～～～～～～～～～*/
     /**
      * 名前が未入力の場合、バリデーションメッセージが表示される
      */
@@ -107,7 +108,6 @@ class RegisterTest extends TestCase
             'password_confirmation' => "password",
         ]);
 
-        // 登録後はどこかにリダイレクトされるはず（とりあえず保存を確認）
         $this->assertDatabaseHas('users', [
             'name' => "テストユーザ",
             'email' => "success@example.com",
