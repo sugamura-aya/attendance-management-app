@@ -27,8 +27,9 @@ class AdminAuthController extends Controller
         }
 
         // 3. ダメだったらエラーを抱えて戻る
+        //「このメアドとパスワード、DBにある本物のデータと一致するか」を確認するため、Controllerにてチェック（mail、PWの見た目はRequestformにてチェック）
         return back()->withInput()->withErrors([
-            'email' => 'ログイン情報が正しくありません。',
+            'email' => 'ログイン情報が登録されていません',
         ]);
     }
 
