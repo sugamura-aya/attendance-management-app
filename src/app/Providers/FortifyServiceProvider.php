@@ -33,12 +33,19 @@ class FortifyServiceProvider extends ServiceProvider
     {
         Fortify::createUsersUsing(CreateNewUser::class);
         
+            // 会員登録view指定
             Fortify::registerView(function () {
                 return view('auth.register');
             });
 
+            // ログインview指定
             Fortify::loginView(function () {
                 return view('auth.login');
+            });
+
+            // メール認証view指定
+            Fortify::verifyEmailView(function () {
+                return view('auth.verify-email'); 
             });
 
             RateLimiter::for('login', function (Request $request) {

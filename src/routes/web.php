@@ -27,8 +27,8 @@ Route::get('/', function () {
 
 // --- 【一般ユーザー向け】（ログイン必須グループ） ---
 // 「ログイン済み」かつ「role=0」の人しか絶対に通れないよう、自作「user」ミドルウェアを利用。
-// ※応用「メール認証」※　着手時には「'verified'」ミドルウェアも加えること
-Route::middleware(['auth', 'user'])->group(function () {
+// ※応用「メール認証」：「'verified'」ミドルウェアも加える
+Route::middleware(['auth', 'user','verified'])->group(function () {
     
     // ➂出勤登録画面（表示）
     Route::get('/attendance', [AttendanceController::class, 'index'])->name('attendance.index');

@@ -28,25 +28,31 @@
     </header>
 
     <div class="container">
-        <p>
+        <p class="main-message">
             登録していただいたメールアドレスに認証メールを送付しました。<br>
             メール認証を完了してください。
         </p>
 
         <div class="actions">
-            {{-- 1. メインのボタン（aタグをCSSでボタンにする） --}}
-            <a href="{{ $verificationUrl }}" class="actions__button-submit"> 
+            {{-- 1. メインのボタン --}}
+            {{-- ※実際の認証URLはメール内に届くので、ここはデザイン上のボタンとして配置（メールソフトを開く想定） --}}
+            <div class="button-container">
+                <a href="https://mail.google.com/" target="_blank" class="actions__button-submit"> 
                     認証はこちらから
-            </a>
+                </a>
+            </div>
 
-            {{-- 2. 認証メール再送フォーム --}}
+            {{-- 2. 認証メール再送フォーム（リンク） --}}
             <form id="resend-form" method="POST" action="{{ route('verification.send') }}" style="display:none;">
                 @csrf
             </form>
-            {{-- aタグで再送フォームを送信させる --}}
-            <a href="#" class="remail-link" onclick="event.preventDefault(); document.getElementById('resend-form').submit();">
-                認証メールを再送する
-            </a>
+            <div class="link-container">
+                {{--JavaScript説明1：event.preventDefault();: 「リンクを押してもどこにも飛ばないで（ページを移動しないで）」という命令--}}
+                {{--JavaScript説明2：document.getElementById('resend-form').submit();: 「さっき隠した透明なポスト（resend-form）を今すぐ送信して」という命令--}}
+                <a href="#" class="remail-link" onclick="event.preventDefault(); document.getElementById('resend-form').submit();">
+                    認証メールを再送する
+                </a>
+            </div>
         </div>
     </div>
 

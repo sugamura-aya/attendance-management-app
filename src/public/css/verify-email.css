@@ -1,7 +1,6 @@
 /* 全体のフォントをInterに指定 */
 body {
     font-family: 'Inter', "Noto Sans JP", sans-serif;
-    background-color: #F0EFF2;
 }
 
 /* ========== Header基盤 ========== */
@@ -45,11 +44,11 @@ body {
     padding: 0 20px;
 }
 
-/* メッセージの余白 */
-.container p {
-    margin-bottom: 30px;
-    line-height: 1.6;
-    font-size: 16px;
+/* ========== メッセージ ========== */
+.main-message{
+    font-size: 24px;
+    font-weight: 700;
+    color: #000000;
 }
 
 /* ========== ボタンとリンクのエリア ========== */
@@ -61,32 +60,34 @@ body {
     /* 中央揃え */
     gap: 20px;
     /* ボタンとリンクの間の「遊び」 */
+    margin-top: 40px;
 }
 
-/* メインボタン（aタグ） */
+/* メインボタン(認証はこちらから) */
 .actions__button-submit {
     display: block;
     /* 幅を指定するためにブロック化 */
-    width: 280px;
+    width: 257px;
     /* 好みの幅で精密に調整してね */
-    background-color: #000000;
-    color: #FFFFFF;
+    background-color: #D9D9D9;
+    color: #000000;
     text-decoration: none;
     /* 下線を消す */
-    padding: 15px 0;
-    border-radius: 5px;
+    padding: 20px 0;
+    border-radius: 10px;
     font-weight: bold;
+    font-size: 24px;
     transition: background-color 0.3s;
+    margin-bottom: 50px;
 }
 
 .actions__button-submit:hover {
-    background-color: #333333;
+    background-color: #a5a0a0;
 }
 
 /* 再送リンク */
 .remail-link {
-    color: #333333;
-    font-size: 14px;
-    text-decoration: underline;
-    /* リンクっぽく下線 */
+    color: #0073CC;
+    font-size: 20px;
+    text-decoration: none;
 }

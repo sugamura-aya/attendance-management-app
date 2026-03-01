@@ -52,6 +52,20 @@ attendance-management-app（勤怠管理アプリ）
 13. シンボリックリンクの作成  （※必要に応じて実行）
     
     `php artisan storage:link`
+
+14. メール認証の設定（Mailtrap等の利用）
+    
+    `.env` ファイルの `MAIL_` 項目を、利用するSMTPサーバーの情報（Mailtrap推奨）に書き換えてください。
+    ```env
+    MAIL_MAILER=smtp
+    MAIL_HOST=sandbox.smtp.mailtrap.io
+    MAIL_PORT=2525
+    MAIL_USERNAME=（各自のユーザー名）
+    MAIL_PASSWORD=（各自のパスワード）
+    MAIL_ENCRYPTION=tls
+    ```
+    書き換え後、設定を反映させるために以下のコマンドを実行してください。
+    `php artisan config:clear`
     
 
 ## 使用技術・実行環境
