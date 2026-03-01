@@ -96,7 +96,7 @@ attendance-management-app（勤怠管理アプリ）
 - 勤怠一覧画面 : /attendance/list
 - 勤怠詳細画面 : /attendance/detail/{id}
 - 勤怠申請登録処理 : /attendance/edit/{id}
-- 申請一覧画面 : /stamp_correction_request/list（※ユーザー用）
+- 申請一覧画面 : /stamp_correction_request/list（※ユーザー、管理者共通/ミドルウェアにて制御）
 
 管理者用（管理・承認）
 - ログイン画面 : /admin/login
@@ -106,7 +106,7 @@ attendance-management-app（勤怠管理アプリ）
 - スタッフ一覧画面 : /admin/staff/list
 - スタッフ別勤怠一覧画面 : /admin/attendance/staff/{id}
 - 【応用】CSV出力処理 ： /admin/attendance/export/{id}
-- 申請一覧画面 : /stamp_correction_request/list （※管理者用）
+- 申請一覧画面 : /stamp_correction_request/list （※ユーザー、管理者共通/ミドルウェアにて制御）
 - 修正申請承認画面 : /stamp_correction_request/approve/{attendance_correct_request_id}
 
 ## テストユーザーのログイン情報
@@ -177,11 +177,6 @@ attendance-management-app（勤怠管理アプリ）
   - 全ユーザーからの修正申請を「承認待ち」「承認済み」タブで一覧表示。
   - 「詳細」ボタン → 承認画面へ遷移。
   - 申請内容の確認を行い、「承認」ボタン押下で勤怠本番データに反映。
-
-## 未実装（応用要件）
-- メールを用いた認証機能 
-- 認証メール再送機能 
-- PHPunitを用いたテスト（応用：メール認証）
 
 ## 補足（カスタム部分）
 - （一般ユーザー）勤怠詳細画面　（管理者）勤怠詳細画面・修正申請承認画面：successメッセージ表示
